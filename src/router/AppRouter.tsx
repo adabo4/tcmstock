@@ -6,6 +6,7 @@ import SignUp from "../pages/auth/SignUp";
 import Dashboard from "../pages/Dashboard";
 import Catalog from "../pages/Catalog";
 import Settings from "../pages/Settings";
+import VerifyEmail from "../pages/auth/VerifyEmail";
 
 export default function AppRouter() {
   return (
@@ -15,6 +16,7 @@ export default function AppRouter() {
 
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
