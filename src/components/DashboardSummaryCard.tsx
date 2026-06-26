@@ -15,34 +15,34 @@ export default function DashboardSummaryCard({
   outOfStock,
 }: Props) {
   return (
-    <section className="mb-8 w-full rounded-3xl bg-gradient-to-r from-[#4169c9] to-indigo-700 p-4 sm:p-6 shadow-xl">
+    <section className="mb-8 w-full rounded-3xl bg-gradient-to-r from-[#4169c9] to-indigo-700 p-4 sm:p-5 shadow-xl">
       {/* Header */}
 
-      <div className="mb-4 sm:mb-8 flex items-start justify-between">
-        <div className="flex items-center gap-3 sm:gap-6">
-          <div className="flex h-12 w-12 sm:h-20 sm:w-20 items-center justify-center rounded-2xl sm:rounded-3xl bg-white/10">
+      <div className="mb-4 sm:mb-5 flex items-start justify-between">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-white/10">
             <Pill className="text-white" size={28} />
           </div>
 
           <div>
-            <h2 className="text-2xl sm:text-5xl font-bold text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
               Pill Inventory
             </h2>
 
-            <p className="mt-1 sm:mt-3 text-sm sm:text-2xl text-white/80">
+            <p className="mt-1 text-sm sm:text-base text-white/80">
               {userName}
             </p>
           </div>
         </div>
 
-        <button className="flex h-10 w-10 sm:h-20 sm:w-20 items-center justify-center rounded-2xl sm:rounded-3xl bg-white/10 hover:bg-white/20">
+        <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20">
           <LogOut className="text-white" size={20} />
         </button>
       </div>
 
       {/* Stats */}
 
-      <div className="grid grid-cols-3 gap-2 sm:gap-8">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <DashboardStatCard
           number={totalItems}
           label="Total Items"
