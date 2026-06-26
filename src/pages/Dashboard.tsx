@@ -1,5 +1,20 @@
-import React from "react";
+import DashboardSummaryCard from "../components/DashboardSummaryCard";
 
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <>
+      <h1 className="mb-1 text-5xl font-bold">Dashboard</h1>
+
+      <p className="mb-8 text-slate-500">Overview of your pill inventory</p>
+
+      <DashboardSummaryCard
+        userName="Adriána Bohunická"
+        totalItems={64}
+        lowStock={3}
+        outOfStock={1}
+      />
+
+      {/* sem pôjde tabuľka */}
+    </>
+  );
 }
