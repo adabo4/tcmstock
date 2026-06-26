@@ -76,11 +76,6 @@ export default function SignIn() {
           </div>
 
           <div className="flex items-center justify-between text-base">
-            <label className="flex items-center gap-3 text-slate-700">
-              <input type="checkbox" className="h-5 w-5 rounded" />
-              Remember me
-            </label>
-
             <Link to="/forgot-password" className="font-medium text-blue-700">
               Forgot password?
             </Link>

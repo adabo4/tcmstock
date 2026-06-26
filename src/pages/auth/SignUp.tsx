@@ -87,14 +87,6 @@ export default function SignUp() {
             </label>
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <Lock className="text-slate-500" size={24} />
-              {/* <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                placeholder="••••••••"
-                className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
-              />
-              <Eye className="text-slate-500" size={24} /> */}
               <PasswordInput
                 value={password}
                 onChange={setPassword}

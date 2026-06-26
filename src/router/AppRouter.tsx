@@ -8,6 +8,8 @@ import Catalog from "../pages/Catalog";
 import Settings from "../pages/Settings";
 import VerifyEmail from "../pages/auth/VerifyEmail";
 import ProtectedRoute from "./ProtectedRoute";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 
 export default function AppRouter() {
   return (
@@ -18,6 +20,9 @@ export default function AppRouter() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
