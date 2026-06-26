@@ -1,11 +1,8 @@
 import { useState } from "react";
 import {
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Search,
   ShoppingCart,
-  SlidersHorizontal,
   Plus,
   Minus,
 } from "lucide-react";
@@ -291,6 +288,7 @@ function QuantityStepper({
   return (
     <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
       <button
+        title="decrese product"
         onClick={onDecrease}
         className="flex h-11 w-11 items-center justify-center bg-slate-50 text-slate-500 hover:bg-slate-100"
       >
@@ -302,6 +300,7 @@ function QuantityStepper({
       </div>
 
       <button
+        title="increase product"
         onClick={onIncrease}
         className="flex h-11 w-11 items-center justify-center bg-slate-50 text-slate-700 hover:bg-slate-100"
       >

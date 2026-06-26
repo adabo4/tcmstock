@@ -34,6 +34,7 @@ export default function MobileSidebar({
         `}
       >
         <button
+          title="close sidebar"
           onClick={() => setSidebarOpen(false)}
           className="mb-6 ml-auto flex h-10 w-10 items-center justify-center rounded-xl hover:bg-slate-100"
         >

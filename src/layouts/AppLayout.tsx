@@ -15,6 +15,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-slate-50">
       <button
+        title="Menu Icon"
         onClick={() => setSidebarOpen(true)}
         className="fixed left-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow lg:hidden"
       >

@@ -35,7 +35,10 @@ export default function DashboardSummaryCard({
           </div>
         </div>
 
-        <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20">
+        <button
+          title="logout"
+          className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20"
+        >
           <LogOut className="text-white" size={20} />
         </button>
       </div>

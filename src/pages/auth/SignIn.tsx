@@ -1,8 +1,43 @@
 import { Eye, Lock, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
+import { signInRequest } from "../../api/auth";
+import { useState } from "react";
+import { useAuth } from "../../context/useAuth";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    setError("");
+
+    try {
+      setLoading(true);
+
+      const response = await signInRequest(email, password);
+
+      signIn(response.accessToken, response.user);
+
+      navigate("/dashboard");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Login failed.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <AuthLayout>
       <div>
@@ -11,7 +46,7 @@ export default function SignIn() {
           Welcome back! Please sign in to your account.
         </p>
 
-        <form className="mt-12 space-y-8">
+        <form onSubmit={handleSubmit} className="mt-12 space-y-8">
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
               Email
@@ -19,6 +54,8 @@ export default function SignIn() {
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <Mail className="text-slate-500" size={24} />
               <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="you@example.com"
                 className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
@@ -33,6 +70,8 @@ export default function SignIn() {
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <Lock className="text-slate-500" size={24} />
               <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="••••••••"
                 className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
@@ -51,12 +90,15 @@ export default function SignIn() {
               Forgot password?
             </Link>
           </div>
-
+          {error && (
+            <p className="rounded-xl bg-red-50 p-4 text-red-600">{error}</p>
+          )}
           <button
             type="submit"
-            className="h-16 w-full rounded-xl bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-800"
+            disabled={loading}
+            className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:opacity-50"
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
