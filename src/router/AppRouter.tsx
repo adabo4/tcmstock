@@ -4,14 +4,8 @@ import AppLayout from "../layouts/AppLayout";
 import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import Dashboard from "../pages/Dashboard";
-
-function Products() {
-  return <div>Products page</div>;
-}
-
-function Settings() {
-  return <div>Settings page</div>;
-}
+import Catalog from "../pages/Catalog";
+import Settings from "../pages/Settings";
 
 export default function AppRouter() {
   return (
@@ -24,7 +18,7 @@ export default function AppRouter() {
 
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/catalog" element={<Catalog />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>

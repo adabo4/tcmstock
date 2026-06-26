@@ -47,10 +47,10 @@ export default function AppLayout() {
 
           <SidebarLink
             setSidebarOpen={setSidebarOpen}
-            to="/products"
+            to="/catalog"
             icon={<Package size={20} />}
           >
-            Products
+            Catalog
           </SidebarLink>
 
           <SidebarLink
