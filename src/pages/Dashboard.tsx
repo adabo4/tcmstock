@@ -1,4 +1,5 @@
 import DashboardSummaryCard from "../components/DashboardSummaryCard";
+import MyStockTable from "../components/stock/MyStockTable";
 
 export default function Dashboard() {
   return (
@@ -16,7 +17,7 @@ export default function Dashboard() {
         outOfStock={1}
       />
 
-      {/* sem pôjde tabuľka */}
+      <MyStockTable />
     </>
   );
 }

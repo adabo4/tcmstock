@@ -69,19 +69,6 @@ export default function AppLayout() {
       </aside>
 
       <div className="lg:pl-72">
-        {/* <header className="sticky top-0 z-10 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-10">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-950">Dashboard</h1>
-            <p className="text-sm text-slate-500">
-              Manage your TCM medicine stock
-            </p>
-          </div>
-
-          <div className="hidden rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 sm:block">
-            Adriána
-          </div>
-        </header> */}
-
         <main className="p-6 lg:p-10">
           <Outlet />
         </main>
