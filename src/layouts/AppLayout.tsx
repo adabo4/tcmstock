@@ -36,7 +36,7 @@ export default function AppLayout() {
         </button>
       </aside>
 
-      <div className="lg:pl-30">
+      <div className="lg:pl-72">
         {/* <header className="sticky top-0 z-10 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 lg:px-10">
           <div>
             <h1 className="text-2xl font-bold text-slate-950">Dashboard</h1>

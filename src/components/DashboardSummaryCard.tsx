@@ -15,7 +15,7 @@ export default function DashboardSummaryCard({
   outOfStock,
 }: Props) {
   return (
-    <section className="mb-8 w-full rounded-3xl bg-gradient-to-r from-[#4169c9] to-indigo-700 p-8 shadow-xl">
+    <section className="mb-8 w-full rounded-3xl bg-gradient-to-r from-[#4169c9] to-indigo-700 p-6 shadow-xl">
       {/* Header */}
 
       <div className="mb-8 flex items-start justify-between">
