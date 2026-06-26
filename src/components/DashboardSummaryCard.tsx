@@ -1,5 +1,7 @@
 import { AlertTriangle, Box, LogOut, Pill, CircleMinus } from "lucide-react";
 import DashboardStatCard from "./ui/DashboardStats";
+import { Router, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 
 type Props = {
   userName: string;
@@ -14,6 +16,13 @@ export default function DashboardSummaryCard({
   lowStock,
   outOfStock,
 }: Props) {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  function handleLogout() {
+    signOut();
+    navigate("/sign-in");
+  }
   return (
     <section className="mb-8 w-full rounded-3xl bg-gradient-to-r from-[#4169c9] to-indigo-700 p-4 sm:p-5 shadow-xl">
       {/* Header */}
@@ -36,6 +45,7 @@ export default function DashboardSummaryCard({
         </div>
 
         <button
+          onClick={handleLogout}
           title="logout"
           className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20"
         >

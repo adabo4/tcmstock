@@ -7,6 +7,7 @@ import Dashboard from "../pages/Dashboard";
 import Catalog from "../pages/Catalog";
 import Settings from "../pages/Settings";
 import VerifyEmail from "../pages/auth/VerifyEmail";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRouter() {
   return (
@@ -18,10 +19,12 @@ export default function AppRouter() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
 
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/settings" element={<Settings />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

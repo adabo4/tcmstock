@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
@@ -9,9 +9,17 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import MobileSidebar from "../components/ui/MobileSidebar";
+import { useAuth } from "../context/useAuth";
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  function handleLogout() {
+    signOut();
+    navigate("/sign-in");
+  }
   return (
     <div className="min-h-screen bg-slate-50">
       <button
@@ -63,7 +71,10 @@ export default function AppLayout() {
           </SidebarLink>
         </nav>
 
-        <button className="absolute bottom-6 left-6 right-6 flex h-12 items-center gap-3 rounded-xl px-4 text-slate-500 hover:bg-slate-100">
+        <button
+          onClick={handleLogout}
+          className="absolute bottom-6 left-6 right-6 flex h-12 items-center gap-3 rounded-xl px-4 text-slate-500 hover:bg-slate-100"
+        >
           <LogOut size={20} />
           Sign out
         </button>
