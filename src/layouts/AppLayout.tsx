@@ -56,7 +56,7 @@ export default function AppLayout() {
 
           <SidebarLink
             setSidebarOpen={setSidebarOpen}
-            to="/catalog"
+            to="/tablets/catalog"
             icon={<Package size={20} />}
           >
             Catalog
@@ -100,12 +100,12 @@ export function SidebarLink({
   to,
   icon,
   children,
-  setSitebarOpen,
+  setSidebarOpen,
 }: SidebarLinkProps) {
   return (
     <NavLink
       to={to}
-      onClick={() => setSitebarOpen((prev) => !prev)}
+      onClick={() => setSidebarOpen(false)}
       className={({ isActive }) =>
         [
           "flex h-12 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition",

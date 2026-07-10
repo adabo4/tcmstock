@@ -54,7 +54,7 @@ export default function MobileSidebar({
 
         <nav className="mt-10 space-y-2">
           <SidebarLink
-            setSitebarOpen={setSidebarOpen}
+            setSidebarOpen={setSidebarOpen}
             to="/dashboard"
             icon={<LayoutDashboard size={20} />}
           >
@@ -62,15 +62,15 @@ export default function MobileSidebar({
           </SidebarLink>
 
           <SidebarLink
-            setSitebarOpen={setSidebarOpen}
-            to="/products"
+            setSidebarOpen={setSidebarOpen}
+            to="/tablets/catalog"
             icon={<Package size={20} />}
           >
-            Products
+            Catalog
           </SidebarLink>
 
           <SidebarLink
-            setSitebarOpen={setSidebarOpen}
+            setSidebarOpen={setSidebarOpen}
             to="/settings"
             icon={<Settings size={20} />}
           >
