@@ -27,7 +27,7 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/tablets/catalog" element={<Catalog />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>

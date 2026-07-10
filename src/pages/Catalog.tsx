@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -6,88 +6,74 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import type { CatalogProduct, ProductType } from "../types/product";
 import SearchCatalog from "../components/SearchCatalog";
-
-type CatalogProduct = {
-  id: number;
-  code: string;
-  name: string;
-  type: string;
-  category: string;
-  categoryColor: string;
-};
-
-const catalogProducts: CatalogProduct[] = [
-  {
-    id: 1,
-    code: "001",
-    name: "Kúzlo prvej pomoci",
-    type: "Tablety",
-    category: "Imunita",
-    categoryColor: "bg-blue-50 text-blue-700",
-  },
-  {
-    id: 2,
-    code: "002",
-    name: "Chlad rannej hmly",
-    type: "Tablety",
-    category: "Dýchacie cesty",
-    categoryColor: "bg-emerald-50 text-emerald-700",
-  },
-  {
-    id: 3,
-    code: "003",
-    name: "Krehkosť zvinutého lístku",
-    type: "Tablety",
-    category: "Trávenie",
-    categoryColor: "bg-amber-50 text-amber-700",
-  },
-  {
-    id: 4,
-    code: "004",
-    name: "Priesmyk veternej hory",
-    type: "Tablety",
-    category: "Kĺby a svaly",
-    categoryColor: "bg-purple-50 text-purple-700",
-  },
-  {
-    id: 5,
-    code: "005",
-    name: "Vyvanutie dračej jaskyne",
-    type: "Tablety",
-    category: "Pečeň",
-    categoryColor: "bg-lime-50 text-lime-700",
-  },
-  {
-    id: 6,
-    code: "006",
-    name: "Zrodenie Fénixa",
-    type: "Tablety",
-    category: "Energie",
-    categoryColor: "bg-orange-50 text-orange-700",
-  },
-  {
-    id: 7,
-    code: "007",
-    name: "Harmónia piatich prvkov",
-    type: "Tablety",
-    category: "Celkové tonikum",
-    categoryColor: "bg-blue-50 text-blue-700",
-  },
-  {
-    id: 8,
-    code: "008",
-    name: "Strážca pokojného srdca",
-    type: "Tablety",
-    category: "Srdce",
-    categoryColor: "bg-red-50 text-red-700",
-  },
-];
+import { getCatalogRequest } from "../api/catalog";
+import { PRODUCT_TYPE_LABELS } from "../types/product";
 
 export default function Catalog() {
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const ITEMS_PER_PAGE = 15;
+
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
     null,
   );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [type, setType] = useState<ProductType | "">("");
+
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await getCatalogRequest({
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+          search: debouncedSearch,
+          type: type || undefined,
+        });
+
+        setProducts(response.items);
+        setTotal(response.total);
+        setTotalPages(response.totalPages);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load catalog.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCatalog();
+  }, [currentPage, debouncedSearch, type]);
+
+  function handleSearchChange(value: string) {
+    setSearch(value);
+    setCurrentPage(1);
+  }
+
+  function handleTypeChange(value: ProductType | "") {
+    setType(value);
+    setCurrentPage(1);
+  }
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
 
   return (
     <div>
@@ -98,23 +84,38 @@ export default function Catalog() {
         </p>
       </div>
 
-      <SearchCatalog />
+      <SearchCatalog
+        search={search}
+        setSearch={handleSearchChange}
+        type={type}
+        setType={handleTypeChange}
+      />
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
+          {loading && (
+            <p className="mb-4 rounded-xl bg-white p-4 text-slate-500">
+              Loading catalog...
+            </p>
+          )}
+
+          {error && (
+            <p className="mb-4 rounded-xl bg-red-50 p-4 text-red-600">
+              {error}
+            </p>
+          )}
           <table className="w-full min-w-[900px]">
             <thead className="bg-white">
               <tr className="border-b border-slate-200 text-left text-sm font-semibold text-slate-500">
                 <th className="px-8 py-5">Code</th>
                 <th className="px-8 py-5">Name ↑</th>
                 <th className="px-8 py-5">Type</th>
-                <th className="px-8 py-5">Category</th>
                 <th className="px-8 py-5 text-right">Add</th>
               </tr>
             </thead>
 
             <tbody>
-              {catalogProducts.map((product) => (
+              {products.map((product) => (
                 <tr
                   key={product.id}
                   className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/60"
@@ -129,14 +130,8 @@ export default function Catalog() {
                     <p className="font-bold text-slate-950">{product.name}</p>
                   </td>
 
-                  <td className="px-8 py-5 text-slate-600">{product.type}</td>
-
-                  <td className="px-8 py-5">
-                    <span
-                      className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${product.categoryColor}`}
-                    >
-                      {product.category}
-                    </span>
+                  <td className="px-8 py-5 text-slate-600">
+                    {PRODUCT_TYPE_LABELS[product.productType]}
                   </td>
 
                   <td className="relative px-8 py-5 text-right">
@@ -162,22 +157,38 @@ export default function Catalog() {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-slate-100 px-8 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">Showing 1 to 8 of 64 results</p>
+          <p className="text-sm text-slate-500">
+            Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}{" "}
+            to {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total}{" "}
+            products
+          </p>
 
           <div className="flex items-center gap-2">
-            <PaginationButton>
+            <PaginationButton
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
               <ChevronLeft size={18} />
             </PaginationButton>
 
-            <PaginationButton active>1</PaginationButton>
-            <PaginationButton>2</PaginationButton>
-            <PaginationButton>3</PaginationButton>
+            {Array.from({ length: totalPages }, (_, index) => {
+              const page = index + 1;
 
-            <span className="px-2 text-slate-500">...</span>
+              return (
+                <PaginationButton
+                  key={page}
+                  active={currentPage === page}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </PaginationButton>
+              );
+            })}
 
-            <PaginationButton>8</PaginationButton>
-
-            <PaginationButton>
+            <PaginationButton
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
               <ChevronRight size={18} />
             </PaginationButton>
           </div>
@@ -313,16 +324,27 @@ function QuantityStepper({
 type PaginationButtonProps = {
   children: React.ReactNode;
   active?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
 };
 
-function PaginationButton({ children, active }: PaginationButtonProps) {
+function PaginationButton({
+  children,
+  active,
+  disabled,
+  onClick,
+}: PaginationButtonProps) {
   return (
     <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
       className={[
         "flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold",
         active
           ? "border-primary bg-primary/10 text-primary"
           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
+        disabled ? "cursor-not-allowed opacity-40" : "",
       ].join(" ")}
     >
       {children}
