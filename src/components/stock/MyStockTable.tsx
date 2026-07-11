@@ -161,7 +161,11 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Minus, Plus, Trash2 } from "lucide-react";
-import { getMyStockRequest } from "../../api/stock";
+import {
+  getMyStockRequest,
+  removeFromMyStockRequest,
+  updateMyStockRequest,
+} from "../../api/stock";
 import type { ProductType } from "../../types/product";
 
 type MyStockItem = {
@@ -204,8 +208,11 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
+  const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
 
   const ITEMS_PER_PAGE = 15;
+
   useEffect(() => {
     const timeout = window.setTimeout(async () => {
       try {
@@ -220,7 +227,6 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
         });
 
         setStock(data.items);
-
         setTotal(data.total);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -253,6 +259,74 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
         <p className="font-medium text-red-700">{error}</p>
       </section>
     );
+  }
+
+  async function handleUpdateQuantity(
+    item: MyStockItem,
+    field: "fullQuantity" | "openedQuantity",
+    newValue: number,
+  ) {
+    if (newValue < 0) {
+      return;
+    }
+
+    try {
+      setUpdatingItemId(item.id);
+      setError("");
+
+      const updatedItem = await updateMyStockRequest(item.id, {
+        fullQuantity: field === "fullQuantity" ? newValue : item.fullQuantity,
+
+        openedQuantity:
+          field === "openedQuantity" ? newValue : item.openedQuantity,
+      });
+
+      setStock((currentStock) =>
+        currentStock.map((stockItem) =>
+          stockItem.id === updatedItem.id ? updatedItem : stockItem,
+        ),
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to update quantity.",
+      );
+    } finally {
+      setUpdatingItemId(null);
+    }
+  }
+
+  async function handleDelete(itemId: number) {
+    try {
+      setDeletingItemId(itemId);
+      setError("");
+
+      await removeFromMyStockRequest(itemId);
+
+      const nextPage =
+        stock.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
+
+      if (nextPage !== currentPage) {
+        setCurrentPage(nextPage);
+        return;
+      }
+
+      const data = await getMyStockRequest({
+        search,
+        type: type || undefined,
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+      });
+
+      setStock(data.items);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to delete product.",
+      );
+    } finally {
+      setDeletingItemId(null);
+    }
   }
 
   return (
@@ -320,11 +394,45 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
                     </td>
 
                     <td className="px-4 py-4">
-                      <QuantityControl value={item.fullQuantity} />
+                      <QuantityControl
+                        value={item.fullQuantity}
+                        disabled={updatingItemId === item.id}
+                        onDecrease={() =>
+                          handleUpdateQuantity(
+                            item,
+                            "fullQuantity",
+                            item.fullQuantity - 1,
+                          )
+                        }
+                        onIncrease={() =>
+                          handleUpdateQuantity(
+                            item,
+                            "fullQuantity",
+                            item.fullQuantity + 1,
+                          )
+                        }
+                      />
                     </td>
 
                     <td className="px-4 py-4">
-                      <QuantityControl value={item.openedQuantity} />
+                      <QuantityControl
+                        value={item.openedQuantity}
+                        disabled={updatingItemId === item.id}
+                        onDecrease={() =>
+                          handleUpdateQuantity(
+                            item,
+                            "openedQuantity",
+                            item.openedQuantity - 1,
+                          )
+                        }
+                        onIncrease={() =>
+                          handleUpdateQuantity(
+                            item,
+                            "openedQuantity",
+                            item.openedQuantity + 1,
+                          )
+                        }
+                      />
                     </td>
 
                     <td className="px-4 py-4 text-lg font-bold text-slate-950">
@@ -343,7 +451,13 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
 
                     <td className="rounded-r-2xl px-4 py-4">
                       <div className="flex justify-end">
-                        <button className="flex h-10 w-10 items-center justify-center rounded-xl text-red-500 hover:bg-red-50">
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          disabled={deletingItemId === item.id}
+                          aria-label={`Delete ${item.tabletCatalog.name}`}
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-red-500 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -397,12 +511,25 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
 
 type QuantityControlProps = {
   value: number;
+  onDecrease: () => void;
+  onIncrease: () => void;
+  disabled?: boolean;
 };
 
-function QuantityControl({ value }: QuantityControlProps) {
+function QuantityControl({
+  value,
+  onDecrease,
+  onIncrease,
+  disabled = false,
+}: QuantityControlProps) {
   return (
     <div className="flex w-fit items-center rounded-xl border border-slate-200 bg-white">
-      <button className="flex h-9 w-9 items-center justify-center text-slate-500 hover:text-slate-950">
+      <button
+        type="button"
+        onClick={onDecrease}
+        disabled={disabled || value === 0}
+        className="flex h-9 w-9 items-center justify-center text-slate-500 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+      >
         <Minus size={16} />
       </button>
 
@@ -410,7 +537,12 @@ function QuantityControl({ value }: QuantityControlProps) {
         {value}
       </span>
 
-      <button className="flex h-9 w-9 items-center justify-center text-slate-500 hover:text-slate-950">
+      <button
+        type="button"
+        onClick={onIncrease}
+        disabled={disabled}
+        className="flex h-9 w-9 items-center justify-center text-slate-500 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+      >
         <Plus size={16} />
       </button>
     </div>

@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ShoppingCart,
-  Plus,
-  Minus,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import type { CatalogProduct, ProductType } from "../types/product";
 import { getCatalogRequest } from "../api/catalog";
 import { PRODUCT_TYPE_LABELS } from "../types/product";
 import SearchProducts from "../components/SearchProducts";
-import QuantityStepper from "../components/stock/QuantityStepper";
 import AddToInventoryPopover from "../components/stock/AddToInventoryPopover";
 
 export default function Catalog() {
@@ -19,7 +12,7 @@ export default function Catalog() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 15;
 
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
     null,
