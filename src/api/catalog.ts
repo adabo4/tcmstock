@@ -1,4 +1,4 @@
-import { apiFetch } from "../lib/api";
+import { authFetch } from "../lib/api";
 import type { CatalogProduct, ProductType } from "../types/product";
 
 export type CatalogResponse = {
@@ -30,7 +30,7 @@ export function getCatalogRequest(params: GetCatalogParams = {}) {
   searchParams.set("page", String(params.page ?? 1));
   searchParams.set("limit", String(params.limit ?? 15));
 
-  return apiFetch<CatalogResponse>(
+  return authFetch<CatalogResponse>(
     `/tablets/catalog?${searchParams.toString()}`,
   );
 }
