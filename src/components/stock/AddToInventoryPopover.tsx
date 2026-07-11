@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { CatalogProduct } from "../../types/product";
 import { addToMyStockRequest } from "../../api/stock";
 import QuantityStepper from "./QuantityStepper";
-import { useNotification } from "../../context/NotificationContext";
+import { useNotification } from "../../context/useNotification";
 
 type AddToInventoryPopoverProps = {
   product: CatalogProduct;
@@ -16,7 +16,7 @@ export default function AddToInventoryPopover({
   onClose,
   onAdded,
 }: AddToInventoryPopoverProps) {
-  const [fullQuantity, setFullQuantity] = useState(1);
+  const [fullQuantity, setFullQuantity] = useState(0);
   const [openedQuantity, setOpenedQuantity] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");

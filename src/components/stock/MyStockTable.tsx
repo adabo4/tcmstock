@@ -167,7 +167,7 @@ import {
   updateMyStockRequest,
 } from "../../api/stock";
 import type { ProductType } from "../../types/product";
-import { useNotification } from "../../context/NotificationContext";
+import { useNotification } from "../../context/useNotification";
 
 type MyStockItem = {
   id: number;
