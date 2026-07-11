@@ -30,3 +30,14 @@ export type MyStockResponse = {
   limit: number;
   totalPages: number;
 };
+
+export type AddToStockDto = {
+  tabletCatalogId: number;
+  fullQuantity: number;
+  openedQuantity: number;
+};
+
+export type UpdateStockDto = {
+  fullQuantity?: number;
+  openedQuantity?: number;
+};

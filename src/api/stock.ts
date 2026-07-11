@@ -1,5 +1,11 @@
 import { authFetch } from "../lib/api";
-import type { MyStockQuery, MyStockResponse } from "../types/stock";
+import type {
+  AddToStockDto,
+  MyStockItem,
+  MyStockQuery,
+  MyStockResponse,
+  UpdateStockDto,
+} from "../types/stock";
 
 export function getMyStockRequest(
   query: MyStockQuery = {},
@@ -20,4 +26,29 @@ export function getMyStockRequest(
   params.set("limit", String(limit));
 
   return authFetch<MyStockResponse>(`/tablets/my?${params.toString()}`);
+}
+
+export function addToMyStockRequest(dto: AddToStockDto): Promise<MyStockItem> {
+  return authFetch<MyStockItem>("/tablets/my", {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function updateMyStockRequest(
+  stockItemId: number,
+  dto: UpdateStockDto,
+): Promise<MyStockItem> {
+  return authFetch<MyStockItem>(`/tablets/my/${stockItemId}`, {
+    method: "PATCH",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function removeFromMyStockRequest(
+  stockItemId: number,
+): Promise<{ message: string }> {
+  return authFetch<{ message: string }>(`/tablets/my/${stockItemId}`, {
+    method: "DELETE",
+  });
 }
