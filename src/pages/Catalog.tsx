@@ -7,9 +7,9 @@ import {
   Minus,
 } from "lucide-react";
 import type { CatalogProduct, ProductType } from "../types/product";
-import SearchCatalog from "../components/SearchCatalog";
 import { getCatalogRequest } from "../api/catalog";
 import { PRODUCT_TYPE_LABELS } from "../types/product";
+import SearchProducts from "../components/SearchProducts";
 
 export default function Catalog() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -17,7 +17,7 @@ export default function Catalog() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 5;
 
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
     null,
@@ -84,11 +84,12 @@ export default function Catalog() {
         </p>
       </div>
 
-      <SearchCatalog
+      <SearchProducts
         search={search}
         setSearch={handleSearchChange}
         type={type}
         setType={handleTypeChange}
+        placeholder="Vyhľadaj podľa názvu, kódu aleby typu..."
       />
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">

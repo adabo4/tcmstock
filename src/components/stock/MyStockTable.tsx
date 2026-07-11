@@ -160,8 +160,9 @@
 // }
 
 import { useEffect, useState } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { getMyStockRequest } from "../../api/tablets";
+import { ChevronLeft, ChevronRight, Minus, Plus, Trash2 } from "lucide-react";
+import { getMyStockRequest } from "../../api/stock";
+import type { ProductType } from "../../types/product";
 
 type MyStockItem = {
   id: number;
@@ -179,6 +180,11 @@ type MyStockItem = {
   };
 };
 
+type MyStockTableProps = {
+  search: string;
+  type: ProductType | "";
+};
+
 function getStockStatus(total: number) {
   if (total === 0) return "Out of stock";
   if (total <= 2) return "Low stock";
@@ -191,35 +197,47 @@ function getStatusClass(total: number) {
   return "bg-green-50 text-green-700";
 }
 
-export default function MyStockTable() {
+export default function MyStockTable({ search, type }: MyStockTableProps) {
   const [stock, setStock] = useState<MyStockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
+  const ITEMS_PER_PAGE = 15;
   useEffect(() => {
-    async function loadMyStock() {
+    const timeout = window.setTimeout(async () => {
       try {
         setIsLoading(true);
         setError("");
 
-        const data = await getMyStockRequest();
+        const data = await getMyStockRequest({
+          search,
+          type: type || undefined,
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+        });
 
-        console.log("My stock data:", data);
+        setStock(data.items);
 
-        setStock(data);
+        setTotal(data.total);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Failed to load stock:", error);
 
         setError(
-          error instanceof Error ? error.message : "Failed to load stock",
+          error instanceof Error ? error.message : "Something went wrong",
         );
       } finally {
         setIsLoading(false);
       }
-    }
+    }, 400);
 
-    loadMyStock();
-  }, []);
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [search, currentPage, type]);
 
   if (isLoading) {
     return (
@@ -337,6 +355,42 @@ export default function MyStockTable() {
           </table>
         </div>
       )}
+      <div className="mt-5 flex flex-col gap-4 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-slate-500">
+          Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+          {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total} products
+        </p>
+
+        <div className="flex items-center gap-2">
+          <PaginationButton
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+          >
+            <ChevronLeft size={18} />
+          </PaginationButton>
+
+          {Array.from({ length: totalPages }, (_, index) => {
+            const page = index + 1;
+
+            return (
+              <PaginationButton
+                key={page}
+                active={currentPage === page}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </PaginationButton>
+            );
+          })}
+
+          <PaginationButton
+            disabled={currentPage === totalPages || totalPages === 0}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
+            <ChevronRight size={18} />
+          </PaginationButton>
+        </div>
+      </div>
     </section>
   );
 }
@@ -360,5 +414,36 @@ function QuantityControl({ value }: QuantityControlProps) {
         <Plus size={16} />
       </button>
     </div>
+  );
+}
+
+type PaginationButtonProps = {
+  children: React.ReactNode;
+  active?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+};
+
+function PaginationButton({
+  children,
+  active = false,
+  disabled = false,
+  onClick,
+}: PaginationButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={[
+        "flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold transition",
+        active
+          ? "border-primary bg-primary/10 text-primary"
+          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
+        disabled ? "cursor-not-allowed opacity-40" : "",
+      ].join(" ")}
+    >
+      {children}
+    </button>
   );
 }

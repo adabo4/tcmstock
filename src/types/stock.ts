@@ -1,12 +1,5 @@
 import type { ProductType } from "./product";
 
-export type TabletCatalogItem = {
-  id: number;
-  code: string;
-  name: string;
-  productType: ProductType;
-};
-
 export type MyStockItem = {
   id: number;
   userId: number;
@@ -19,6 +12,21 @@ export type MyStockItem = {
     id: number;
     code: string;
     name: string;
-    productType: string;
+    productType: ProductType;
   };
+};
+
+export type MyStockQuery = {
+  search?: string;
+  type?: ProductType | "";
+  page?: number;
+  limit?: number;
+};
+
+export type MyStockResponse = {
+  items: MyStockItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 };
