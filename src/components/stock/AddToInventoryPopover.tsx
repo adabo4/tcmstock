@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { CatalogProduct } from "../../types/product";
 import { addToMyStockRequest } from "../../api/stock";
 import QuantityStepper from "./QuantityStepper";
+import { useNotification } from "../../context/NotificationContext";
 
 type AddToInventoryPopoverProps = {
   product: CatalogProduct;
@@ -20,6 +21,8 @@ export default function AddToInventoryPopover({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const { showNotification } = useNotification();
+
   async function handleAddToStock() {
     try {
       setIsSubmitting(true);
@@ -31,12 +34,17 @@ export default function AddToInventoryPopover({
         openedQuantity,
       });
 
+      showNotification("Stock updated successfully.", "success");
+
       onAdded?.();
+
       onClose();
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to add product.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to update stock.";
+
+      setError(message);
+      showNotification(message, "error");
     } finally {
       setIsSubmitting(false);
     }

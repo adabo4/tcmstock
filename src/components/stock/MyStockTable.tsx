@@ -167,6 +167,7 @@ import {
   updateMyStockRequest,
 } from "../../api/stock";
 import type { ProductType } from "../../types/product";
+import { useNotification } from "../../context/NotificationContext";
 
 type MyStockItem = {
   id: number;
@@ -210,6 +211,7 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
   const [total, setTotal] = useState(0);
   const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
+  const { showNotification } = useNotification();
 
   const ITEMS_PER_PAGE = 15;
 
@@ -286,29 +288,32 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
           stockItem.id === updatedItem.id ? updatedItem : stockItem,
         ),
       );
+      showNotification("Product quantity updated.", "success");
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to update quantity.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to update product.";
+
+      setError(message);
+      showNotification(message, "error");
     } finally {
       setUpdatingItemId(null);
     }
   }
 
   async function handleDelete(itemId: number) {
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this product from your stock?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       setDeletingItemId(itemId);
       setError("");
 
       await removeFromMyStockRequest(itemId);
-
-      const nextPage =
-        stock.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
-
-      if (nextPage !== currentPage) {
-        setCurrentPage(nextPage);
-        return;
-      }
 
       const data = await getMyStockRequest({
         search,
@@ -320,15 +325,18 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
       setStock(data.items);
       setTotal(data.total);
       setTotalPages(data.totalPages);
+
+      showNotification("Product removed from stock.", "success");
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to delete product.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to remove product.";
+
+      setError(message);
+      showNotification(message, "error");
     } finally {
       setDeletingItemId(null);
     }
   }
-
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

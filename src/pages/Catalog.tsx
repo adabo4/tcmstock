@@ -133,7 +133,7 @@ export default function Catalog() {
                   <td className="relative px-8 py-5 text-right">
                     <button
                       onClick={() => setSelectedProduct(product)}
-                      className="inline-flex h-12 items-center gap-2 rounded-xl border border-primary px-4 font-bold text-primary transition hover:bg-primary hover:text-white"
+                      className="inline-flex h-12 items-center gap-2 rounded-xl border border-primary px-4 font-bold text-primary transition hover:bg-blue hover:text-white"
                     >
                       <ShoppingCart size={18} />
                       Add
