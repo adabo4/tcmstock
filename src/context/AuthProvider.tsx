@@ -9,6 +9,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const [loading, setLoading] = useState(true);
 
+  function updateUser(updatedUser: User) {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  }
+
   useEffect(() => {
     async function loadUser() {
       if (!token) {
@@ -51,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         signIn,
         signOut,
+        updateUser,
       }}
     >
       {children}

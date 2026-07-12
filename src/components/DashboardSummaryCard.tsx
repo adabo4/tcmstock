@@ -4,7 +4,7 @@ import { Router, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 
 type Props = {
-  userName: string;
+  userName: string | undefined;
   totalItems: number;
   lowStock: number;
   outOfStock: number;

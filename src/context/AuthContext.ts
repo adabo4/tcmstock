@@ -7,6 +7,7 @@ type AuthContextType = {
   loading: boolean;
   signIn: (token: string, user: User) => void;
   signOut: () => void;
+  updateUser: (user: User) => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(

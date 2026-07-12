@@ -7,8 +7,49 @@ import {
   Trash2,
   User,
 } from "lucide-react";
+import { useAuth } from "../context/useAuth";
+import { useState, type FormEvent } from "react";
+import { updateNameRequest } from "../api/auth";
+import { useNotification } from "../context/useNotification";
 
 export default function Settings() {
+  const { user, updateUser } = useAuth();
+
+  const [name, setName] = useState(user?.name ?? "");
+  const [isSavingName, setIsSavingName] = useState(false);
+  const [nameError, setNameError] = useState("");
+
+  const { showNotification } = useNotification();
+
+  async function handleNameSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const trimmedName = name.trim();
+
+    if (!trimmedName) {
+      setNameError("Name is required");
+      return;
+    }
+
+    try {
+      setIsSavingName(true);
+      setNameError("");
+
+      const response = await updateNameRequest(trimmedName);
+
+      updateUser(response.user);
+      showNotification("Meno používateľa bolo zmenené.", "success");
+
+      console.log(response.message);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Name update failed";
+
+      setNameError(message);
+    } finally {
+      setIsSavingName(false);
+    }
+  }
   return (
     <div>
       <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -26,9 +67,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <p className="text-lg font-bold text-slate-950">
-                Adriana Bohunicka
-              </p>
+              <p className="text-lg font-bold text-slate-950">{user?.name}</p>
               <p className="text-slate-500">Admin</p>
             </div>
           </div>
@@ -52,15 +91,41 @@ export default function Settings() {
             subtitle="Update your personal information"
           />
 
-          <form className="mt-8 space-y-6">
-            <Input label="Full Name" defaultValue="Adriana Bohunicka" />
-            <Input label="Email" defaultValue="adriana@example.com" />
+          <form className="mt-8 space-y-6" onSubmit={handleNameSubmit}>
+            <label className="block">
+              <span className="mb-2 block font-semibold text-slate-800">
+                Full Name
+              </span>
+
+              <input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="h-14 w-full rounded-xl border border-slate-200 px-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block font-semibold text-slate-800">
+                Email
+              </span>
+
+              <input
+                value={user?.email ?? ""}
+                disabled
+                className="h-14 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-4 text-slate-500 outline-none"
+              />
+            </label>
+
+            {nameError && (
+              <p className="text-sm font-medium text-red-600">{nameError}</p>
+            )}
 
             <button
-              type="button"
-              className="mt-8 h-14 w-full rounded-xl bg-primary font-semibold text-white hover:bg-primary-hover"
+              type="submit"
+              disabled={isSavingName}
+              className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Save Changes
+              {isSavingName ? "Saving..." : "Save Changes"}
             </button>
           </form>
         </section>

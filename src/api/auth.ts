@@ -70,3 +70,21 @@ export function resetPasswordRequest(token: string, newPassword: string) {
     body: JSON.stringify({ token, newPassword }),
   });
 }
+
+type UpdateNameResponse = {
+  message: string;
+  user: {
+    id: number;
+    email: string;
+    name: string;
+  };
+};
+
+export function updateNameRequest(name: string) {
+  return authFetch<UpdateNameResponse>("/auth/me/name", {
+    method: "PATCH",
+    body: JSON.stringify({
+      name,
+    }),
+  });
+}
