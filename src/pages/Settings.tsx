@@ -1,5 +1,6 @@
 import {
   Eye,
+  EyeOff,
   Lock,
   Monitor,
   Settings as SettingsIcon,
@@ -11,6 +12,7 @@ import { useAuth } from "../context/useAuth";
 import { useState, type FormEvent } from "react";
 import { updateNameRequest } from "../api/auth";
 import { useNotification } from "../context/useNotification";
+import { changePasswordRequest } from "../api/auth";
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
@@ -18,6 +20,14 @@ export default function Settings() {
   const [name, setName] = useState(user?.name ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
   const [nameError, setNameError] = useState("");
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   const { showNotification } = useNotification();
 
@@ -48,6 +58,55 @@ export default function Settings() {
       setNameError(message);
     } finally {
       setIsSavingName(false);
+    }
+  }
+
+  async function handlePasswordSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError("Please fill in all password fields.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordError("New password must contain at least 8 characters.");
+      return;
+    }
+
+    if (currentPassword === newPassword) {
+      setPasswordError("New password must be different from current password.");
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+
+      const response = await changePasswordRequest(
+        currentPassword,
+        newPassword,
+      );
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+      setPasswordSuccess(response.message);
+      showNotification("Heslo bolo úspešne zmenené.", "success");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Password update failed.";
+
+      setPasswordError(message);
+    } finally {
+      setIsChangingPassword(false);
     }
   }
   return (
@@ -137,16 +196,46 @@ export default function Settings() {
             subtitle="Update your password"
           />
 
-          <form className="mt-8 space-y-6">
-            <PasswordInput label="Current Password" />
-            <PasswordInput label="New Password" />
-            <PasswordInput label="Confirm New Password" />
+          <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
+            <PasswordInput
+              label="Current Password"
+              value={currentPassword}
+              onChange={setCurrentPassword}
+              autoComplete="current-password"
+            />
+
+            <PasswordInput
+              label="New Password"
+              value={newPassword}
+              onChange={setNewPassword}
+              autoComplete="new-password"
+            />
+
+            <PasswordInput
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              autoComplete="new-password"
+            />
+
+            {passwordError && (
+              <p className="text-sm font-medium text-red-600">
+                {passwordError}
+              </p>
+            )}
+
+            {passwordSuccess && (
+              <p className="text-sm font-medium text-green-600">
+                {passwordSuccess}
+              </p>
+            )}
 
             <button
-              type="button"
-              className="mt-8 h-14 w-full rounded-xl bg-primary font-semibold text-white hover:bg-primary-hover"
+              type="submit"
+              disabled={isChangingPassword}
+              className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Update Password
+              {isChangingPassword ? "Updating..." : "Update Password"}
             </button>
           </form>
         </section>
@@ -239,18 +328,42 @@ function Input({ label, defaultValue }: InputProps) {
   );
 }
 
-function PasswordInput({ label }: { label: string }) {
+type PasswordInputProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  autoComplete?: string;
+};
+
+function PasswordInput({
+  label,
+  value,
+  onChange,
+  autoComplete,
+}: PasswordInputProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <label className="block">
       <span className="mb-2 block font-semibold text-slate-800">{label}</span>
 
       <div className="flex h-14 items-center rounded-xl border border-slate-200 px-4 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
         <input
-          type="password"
-          defaultValue="password"
-          className="flex-1 bg-transparent outline-none"
+          type={showPassword ? "text" : "password"}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          autoComplete={autoComplete}
+          className="min-w-0 flex-1 bg-transparent outline-none"
         />
-        <Eye size={20} className="text-slate-500" />
+
+        <button
+          type="button"
+          onClick={() => setShowPassword((current) => !current)}
+          className="ml-3 text-slate-500 hover:text-slate-800"
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
       </div>
     </label>
   );

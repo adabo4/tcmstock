@@ -88,3 +88,20 @@ export function updateNameRequest(name: string) {
     }),
   });
 }
+
+type ChangePasswordResponse = {
+  message: string;
+};
+
+export function changePasswordRequest(
+  currentPassword: string,
+  newPassword: string,
+) {
+  return authFetch<ChangePasswordResponse>("/auth/change-password", {
+    method: "PATCH",
+    body: JSON.stringify({
+      currentPassword,
+      newPassword,
+    }),
+  });
+}
