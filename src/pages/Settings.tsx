@@ -10,9 +10,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/useAuth";
 import { useState, type FormEvent } from "react";
-import { updateNameRequest } from "../api/auth";
+import { deleteAccountRequest, updateNameRequest } from "../api/auth";
 import { useNotification } from "../context/useNotification";
 import { changePasswordRequest } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
@@ -28,6 +29,13 @@ export default function Settings() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const { showNotification } = useNotification();
 
@@ -107,6 +115,25 @@ export default function Settings() {
       setPasswordError(message);
     } finally {
       setIsChangingPassword(false);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    try {
+      setIsDeleting(true);
+      setDeleteError("");
+
+      await deleteAccountRequest();
+
+      signOut();
+      navigate("/sign-in", { replace: true });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Account deletion failed.";
+
+      setDeleteError(message);
+    } finally {
+      setIsDeleting(false);
     }
   }
   return (
@@ -260,13 +287,65 @@ export default function Settings() {
 
           <button
             type="button"
-            className="mt-6 flex h-14 items-center justify-center gap-2 rounded-xl border border-red-300 px-6 font-semibold text-red-600 hover:bg-red-50"
+            onClick={() => setShowDeleteConfirm(true)}
+            className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-red-300 px-6 font-semibold text-red-600 hover:bg-red-50"
           >
             <Trash2 size={20} />
             Delete Account
           </button>
         </section>
       </div>
+
+      {showDeleteConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
+          onMouseDown={() => setShowDeleteConfirm(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+              <Trash2 size={26} />
+            </div>
+
+            <h2 className="mt-6 text-2xl font-bold text-slate-950">
+              Delete account?
+            </h2>
+
+            <p className="mt-3 leading-relaxed text-slate-600">
+              Your account and all stock records will be permanently deleted.
+              This action cannot be undone.
+            </p>
+
+            {deleteError && (
+              <p className="mt-4 text-sm font-medium text-red-600">
+                {deleteError}
+              </p>
+            )}
+
+            <div className="mt-8 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="h-12 flex-1 rounded-xl border border-slate-200 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="h-12 flex-1 rounded-xl bg-red-600 font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">

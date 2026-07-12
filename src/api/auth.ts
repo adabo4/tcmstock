@@ -89,6 +89,16 @@ export function updateNameRequest(name: string) {
   });
 }
 
+type DeleteAccountResponse = {
+  message: string;
+};
+
+export function deleteAccountRequest() {
+  return authFetch<DeleteAccountResponse>("/auth/me", {
+    method: "DELETE",
+  });
+}
+
 type ChangePasswordResponse = {
   message: string;
 };
