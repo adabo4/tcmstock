@@ -188,6 +188,7 @@ type MyStockItem = {
 type MyStockTableProps = {
   search: string;
   type: ProductType | "";
+  onStockChanged?: () => void | Promise<void>;
 };
 
 function getStockStatus(total: number) {
@@ -202,7 +203,11 @@ function getStatusClass(total: number) {
   return "bg-green-50 text-green-700";
 }
 
-export default function MyStockTable({ search, type }: MyStockTableProps) {
+export default function MyStockTable({
+  search,
+  type,
+  onStockChanged,
+}: MyStockTableProps) {
   const [stock, setStock] = useState<MyStockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -288,6 +293,7 @@ export default function MyStockTable({ search, type }: MyStockTableProps) {
           stockItem.id === updatedItem.id ? updatedItem : stockItem,
         ),
       );
+      await onStockChanged?.();
       showNotification("Product quantity updated.", "success");
     } catch (error) {
       const message =

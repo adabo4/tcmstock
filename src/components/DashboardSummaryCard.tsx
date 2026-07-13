@@ -1,6 +1,6 @@
 import { AlertTriangle, Box, LogOut, Pill, CircleMinus } from "lucide-react";
 import DashboardStatCard from "./ui/DashboardStats";
-import { Router, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 
 type Props = {
