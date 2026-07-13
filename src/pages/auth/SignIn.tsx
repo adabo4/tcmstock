@@ -1,10 +1,11 @@
 import { Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
-import { signInRequest } from "../../api/auth";
+import { resendVerificationCodeRequest, signInRequest } from "../../api/auth";
 import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import PasswordInput from "../../components/PasswordInput";
+import { ApiError } from "../../lib/api";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -15,26 +16,60 @@ export default function SignIn() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleOpenVerification() {
+    if (!unverifiedEmail) return;
+
+    try {
+      setError("");
+      setResendLoading(true);
+
+      await resendVerificationCodeRequest(unverifiedEmail);
+
+      navigate("/verify-email", {
+        state: {
+          email: unverifiedEmail,
+        },
+      });
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to resend verification code.",
+      );
+    } finally {
+      setResendLoading(false);
+    }
+  }
+
+  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setError("");
+    setUnverifiedEmail("");
 
     try {
       setLoading(true);
 
-      const response = await signInRequest(email, password);
+      const response = await signInRequest(
+        email.trim().toLowerCase(),
+        password,
+      );
 
       signIn(response.accessToken, response.user);
 
       navigate("/dashboard");
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Login failed.");
+    } catch (error) {
+      if (error instanceof ApiError && error.code === "EMAIL_NOT_VERIFIED") {
+        setError("Your email is not verified.");
+        setUnverifiedEmail(error.email || email.trim().toLowerCase());
+
+        return;
       }
+
+      setError(error instanceof Error ? error.message : "Unable to sign in.");
     } finally {
       setLoading(false);
     }
@@ -47,7 +82,7 @@ export default function SignIn() {
           Welcome back! Please sign in to your account.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-12 space-y-8">
+        <form onSubmit={handleSignIn} className="mt-12 space-y-8">
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
               Email
@@ -81,7 +116,22 @@ export default function SignIn() {
             </Link>
           </div>
           {error && (
-            <p className="rounded-xl bg-red-50 p-4 text-red-600">{error}</p>
+            <p className="rounded-xl bg-red-50 px-4 py-3 font-medium text-red-700">
+              {error}
+            </p>
+          )}
+
+          {unverifiedEmail && (
+            <button
+              type="button"
+              disabled={resendLoading}
+              onClick={handleOpenVerification}
+              className="w-full rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 font-semibold text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {resendLoading
+                ? "Sending verification code..."
+                : "Verify email or resend code"}
+            </button>
           )}
           <button
             type="submit"

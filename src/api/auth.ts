@@ -115,3 +115,13 @@ export function changePasswordRequest(
     }),
   });
 }
+
+export function resendVerificationCodeRequest(email: string) {
+  return authFetch<{
+    message: string;
+    email: string;
+  }>("/auth/resend-verification-code", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}

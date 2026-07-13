@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MailCheck } from "lucide-react";
 import AuthLayout from "../../layouts/AuthLayout";
-import { verifyEmailRequest } from "../../api/auth";
+import {
+  resendVerificationCodeRequest,
+  verifyEmailRequest,
+} from "../../api/auth";
 
 type LocationState = {
   email?: string;
@@ -19,6 +22,37 @@ export default function VerifyEmail() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
+
+  async function handleResendCode() {
+    setError("");
+    setResendMessage("");
+
+    if (!email.trim()) {
+      setError("Email is required.");
+      return;
+    }
+
+    try {
+      setResendLoading(true);
+
+      const response = await resendVerificationCodeRequest(
+        email.trim().toLowerCase(),
+      );
+
+      setResendMessage(response.message || "A new verification code was sent.");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to resend verification code.",
+      );
+    } finally {
+      setResendLoading(false);
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -110,10 +144,35 @@ export default function VerifyEmail() {
           <button
             type="submit"
             disabled={isLoading}
-            className="h-16 w-full rounded-xl bg-primary text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             {isLoading ? "Verifying..." : "Verify email"}
           </button>
+
+          <button
+            type="button"
+            disabled={resendLoading}
+            onClick={handleResendCode}
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 font-semibold text-primary transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {resendLoading ? "Sending..." : "Resend verification code"}
+          </button>
+
+          {resendMessage && (
+            <p className="rounded-xl bg-green-50 px-4 py-3 font-medium text-green-700">
+              {resendMessage}
+            </p>
+          )}
+
+          <p className="text-center text-sm leading-6 text-slate-500">
+            If you still do not receive the code, contact{" "}
+            <a
+              href="mailto:support@tcmstock.com"
+              className="font-semibold text-primary"
+            >
+              support@tcmstock.com
+            </a>
+          </p>
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
