@@ -390,23 +390,6 @@ function CardHeader({ icon, title, subtitle }: CardHeaderProps) {
   );
 }
 
-type InputProps = {
-  label: string;
-  defaultValue?: string;
-};
-
-function Input({ label, defaultValue }: InputProps) {
-  return (
-    <label className="block">
-      <span className="mb-2 block font-semibold text-slate-800">{label}</span>
-      <input
-        defaultValue={defaultValue}
-        className="h-14 w-full rounded-xl border border-slate-200 px-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-      />
-    </label>
-  );
-}
-
 type PasswordInputProps = {
   label: string;
   value: string;

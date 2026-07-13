@@ -116,11 +116,8 @@ export default function ResetPassword() {
             </p>
           ) : null}
 
-          <button
-            type="submit"
-            className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover"
-          >
-            Reset password
+          <button type="submit" disabled={loading}>
+            {loading ? "Resetting password..." : "Reset password"}
           </button>
         </form>
 

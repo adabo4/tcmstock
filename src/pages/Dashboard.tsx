@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [stockType, setStockType] = useState<ProductType | "">("");
   const [stock, setStock] = useState<MyStockItem[]>([]);
 
-  const [stockPage, setStockPage] = useState(1);
+  const [, setStockPage] = useState(1);
 
   const { user } = useAuth();
 
@@ -82,7 +82,13 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    loadSummaryStock();
+    const timeoutId = window.setTimeout(() => {
+      void loadSummaryStock();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [loadSummaryStock]);
 
   return (

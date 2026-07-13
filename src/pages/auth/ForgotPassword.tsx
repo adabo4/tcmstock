@@ -1,5 +1,5 @@
 import { ArrowLeft, Mail } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 import { useState } from "react";
 import { forgotPasswordRequest } from "../../api/auth";
@@ -9,8 +9,6 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
