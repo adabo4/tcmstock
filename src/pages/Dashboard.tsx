@@ -81,7 +81,9 @@ export default function Dashboard() {
       setTotalPages(response.totalPages);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to load stock.";
+        error instanceof Error
+          ? error.message
+          : "Nepodarilo sa načítať produkty.";
 
       setError(message);
     } finally {
@@ -101,7 +103,7 @@ export default function Dashboard() {
 
   async function handleDelete(item: MyStockItem) {
     const confirmed = window.confirm(
-      `Are you sure you want to remove ${item.tabletCatalog.name} from your stock?`,
+      `Naozaj chcete odstrániť produkt „${item.tabletCatalog.name}“ zo svojho skladu?`,
     );
 
     if (!confirmed) {
@@ -120,10 +122,12 @@ export default function Dashboard() {
         await loadStock();
       }
 
-      showNotification("Product removed from stock.", "success");
+      showNotification("Produkt bol odstránený zo skladu.", "success");
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to remove product.";
+        error instanceof Error
+          ? error.message
+          : "Produkt sa nepodarilo odstrániť.";
 
       setError(message);
       showNotification(message, "error");
@@ -158,10 +162,12 @@ export default function Dashboard() {
         ),
       );
 
-      showNotification("Product quantity updated.", "success");
+      showNotification("Množstvo produktu bolo aktualizované.", "success");
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to update product.";
+        error instanceof Error
+          ? error.message
+          : "Množstvo produktu sa nepodarilo aktualizovať.";
 
       setError(message);
       showNotification(message, "error");
@@ -172,9 +178,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <h1 className="mb-1 ml-15 lg:ml-0 text-5xl font-bold">Dashboard</h1>
+      <h1 className="mb-1 ml-15 lg:ml-0 text-5xl font-bold">Prehľad</h1>
       <p className="mb-8 ml-15 lg:ml-0 text-slate-500">
-        Overview of your pill inventory
+        Prehľad vašich zásob produktov
       </p>
       <DashboardSummaryCard
         userName={user?.name}
@@ -187,12 +193,11 @@ export default function Dashboard() {
         setSearch={handleStockSearchChange}
         type={stockType}
         setType={handleStockTypeChange}
-        placeholder="Nájdi podľa názvu, kódu alebo typu..."
         showCategoryButton={false}
       ></SearchProducts>
       {isLoading && (
         <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-slate-500">Loading your stock...</p>
+          <p className="text-slate-500">Načítavam sklad...</p>
         </section>
       )}
 
@@ -230,7 +235,7 @@ export default function Dashboard() {
             total={total}
             itemsPerPage={ITEMS_PER_PAGE}
             onPageChange={setCurrentPage}
-            itemLabel="products"
+            itemLabel="produktov"
           />
         </>
       )}

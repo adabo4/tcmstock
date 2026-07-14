@@ -2,9 +2,7 @@ import {
   Eye,
   EyeOff,
   Lock,
-  Monitor,
   Settings as SettingsIcon,
-  Shield,
   Trash2,
   User,
 } from "lucide-react";
@@ -45,7 +43,7 @@ export default function Settings() {
     const trimmedName = name.trim();
 
     if (!trimmedName) {
-      setNameError("Name is required");
+      setNameError("Meno je povinné.");
       return;
     }
 
@@ -61,7 +59,9 @@ export default function Settings() {
       console.log(response.message);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Name update failed";
+        error instanceof Error
+          ? error.message
+          : "Nepodarilo sa aktualizovať meno.";
 
       setNameError(message);
     } finally {
@@ -75,22 +75,22 @@ export default function Settings() {
     setPasswordSuccess("");
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError("Please fill in all password fields.");
+      setPasswordError("Prosím vyplňte všetky polia.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError("New passwords do not match.");
+      setPasswordError("Nové heslá sa nezhodujú.");
       return;
     }
 
-    if (newPassword.length < 8) {
-      setPasswordError("New password must contain at least 8 characters.");
+    if (newPassword.length < 6) {
+      setPasswordError("Nové heslo musí obsahovať aspoň 6 znakov.");
       return;
     }
 
     if (currentPassword === newPassword) {
-      setPasswordError("New password must be different from current password.");
+      setPasswordError("Nové heslo sa musí byť odlišné od súčasného.");
       return;
     }
 
@@ -110,7 +110,7 @@ export default function Settings() {
       showNotification("Heslo bolo úspešne zmenené.", "success");
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Password update failed.";
+        error instanceof Error ? error.message : "Nepodarilo sa zmeniť heslo.";
 
       setPasswordError(message);
     } finally {
@@ -129,7 +129,9 @@ export default function Settings() {
       navigate("/sign-in", { replace: true });
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Account deletion failed.";
+        error instanceof Error
+          ? error.message
+          : "Nepodarilo sa odstrániť účet.";
 
       setDeleteError(message);
     } finally {
@@ -140,21 +142,21 @@ export default function Settings() {
     <div>
       <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-slate-950">Settings</h1>
+          <h1 className="text-4xl font-bold text-slate-950">Nastavenia</h1>
           <p className="mt-2 text-lg text-slate-500">
-            Manage your account settings and preferences
+            Upravte nastavenia svojho účtu.
           </p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-blue">
               AB
             </div>
 
             <div>
               <p className="text-lg font-bold text-slate-950">{user?.name}</p>
-              <p className="text-slate-500">Admin</p>
+              <p className="text-slate-500">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -162,10 +164,7 @@ export default function Settings() {
 
       <div className="mb-8 flex gap-8 border-b border-slate-200">
         <button className="border-b-2 border-primary px-1 pb-4 font-semibold text-primary">
-          Profile
-        </button>
-        <button className="px-1 pb-4 font-semibold text-slate-500 hover:text-slate-900">
-          Notifications
+          Profil
         </button>
       </div>
 
@@ -173,14 +172,14 @@ export default function Settings() {
         <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <CardHeader
             icon={<User />}
-            title="Profile Information"
-            subtitle="Update your personal information"
+            title="Údaje profilu"
+            subtitle="Aktualizujte svoje osobné údaje"
           />
 
           <form className="mt-8 space-y-6" onSubmit={handleNameSubmit}>
             <label className="block">
               <span className="mb-2 block font-semibold text-slate-800">
-                Full Name
+                Meno a priezvisko:
               </span>
 
               <input
@@ -192,7 +191,7 @@ export default function Settings() {
 
             <label className="block">
               <span className="mb-2 block font-semibold text-slate-800">
-                Email
+                Email:
               </span>
 
               <input
@@ -211,7 +210,7 @@ export default function Settings() {
               disabled={isSavingName}
               className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSavingName ? "Saving..." : "Save Changes"}
+              {isSavingName ? "Ukladám..." : "Uložiť zmeny"}
             </button>
           </form>
         </section>
@@ -219,27 +218,27 @@ export default function Settings() {
         <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <CardHeader
             icon={<Lock />}
-            title="Change Password"
-            subtitle="Update your password"
+            title="Zmena hesla"
+            subtitle="Aktualizovať heslo"
           />
 
           <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
             <PasswordInput
-              label="Current Password"
+              label="Aktuálne heslo:"
               value={currentPassword}
               onChange={setCurrentPassword}
               autoComplete="current-password"
             />
 
             <PasswordInput
-              label="New Password"
+              label="Nové heslo:"
               value={newPassword}
               onChange={setNewPassword}
               autoComplete="new-password"
             />
 
             <PasswordInput
-              label="Confirm New Password"
+              label="Potvrdenie:"
               value={confirmPassword}
               onChange={setConfirmPassword}
               autoComplete="new-password"
@@ -262,7 +261,7 @@ export default function Settings() {
               disabled={isChangingPassword}
               className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isChangingPassword ? "Updating..." : "Update Password"}
+              {isChangingPassword ? "Ukladám..." : "Uložiť heslo"}
             </button>
           </form>
         </section>
@@ -270,18 +269,18 @@ export default function Settings() {
         <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <CardHeader
             icon={<SettingsIcon />}
-            title="Account"
-            subtitle="Manage your account"
+            title="Účet"
+            subtitle="Nastavenia účtu"
           />
 
           <div className="mt-12 rounded-2xl border border-red-200 bg-red-50 p-6">
             <div className="flex items-center gap-3 font-bold text-red-600">
               <Trash2 size={20} />
-              Danger Zone
+              Nebezpečná zóna
             </div>
 
             <p className="mt-4 leading-relaxed text-slate-600">
-              Once you delete your account, there is no going back.
+              Odstránenie účtu je trvalé a nie je možné ho vrátiť späť.
             </p>
           </div>
 
@@ -291,7 +290,7 @@ export default function Settings() {
             className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-red-300 px-6 font-semibold text-red-600 hover:bg-red-50"
           >
             <Trash2 size={20} />
-            Delete Account
+            Vymazať účet
           </button>
         </section>
       </div>
@@ -310,12 +309,12 @@ export default function Settings() {
             </div>
 
             <h2 className="mt-6 text-2xl font-bold text-slate-950">
-              Delete account?
+              Naozaj zmazať účet?
             </h2>
 
             <p className="mt-3 leading-relaxed text-slate-600">
-              Your account and all stock records will be permanently deleted.
-              This action cannot be undone.
+              Váš účet a všetky vaše údaje budú vymazané. Táto akcia sa nedá
+              zvrátiť.
             </p>
 
             {deleteError && (
@@ -331,7 +330,7 @@ export default function Settings() {
                 disabled={isDeleting}
                 className="h-12 flex-1 rounded-xl border border-slate-200 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
               >
-                Cancel
+                Zrušiť
               </button>
 
               <button
@@ -340,31 +339,12 @@ export default function Settings() {
                 disabled={isDeleting}
                 className="h-12 flex-1 rounded-xl bg-red-600 font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isDeleting ? "Deleting..." : "Delete Account"}
+                {isDeleting ? "Vymazávam..." : "Zmazať účet"}
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <CardHeader
-            icon={<Shield />}
-            title="Account Security"
-            subtitle="Keep your account secure"
-          />
-
-          <div className="rounded-full bg-green-50 px-5 py-2 font-semibold text-green-700">
-            Everything looks good
-          </div>
-
-          <button className="flex h-14 items-center justify-center gap-3 rounded-xl border border-slate-200 px-6 font-semibold text-slate-700 hover:bg-slate-50">
-            <Monitor size={20} />
-            Manage Sessions
-          </button>
-        </div>
-      </section>
     </div>
   );
 }
@@ -422,7 +402,7 @@ function PasswordInput({
           type="button"
           onClick={() => setShowPassword((current) => !current)}
           className="ml-3 text-slate-500 hover:text-slate-800"
-          aria-label={showPassword ? "Hide password" : "Show password"}
+          aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
         >
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
         </button>

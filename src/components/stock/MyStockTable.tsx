@@ -1,12 +1,12 @@
 function getStockStatus(total: number) {
-  if (total === 0) return "Out of stock";
-  if (total <= 2) return "Low stock";
-  return "In stock";
+  if (total === 0) return "Vypredané";
+  if (total <= 1) return "Dochádza";
+  return "Na sklade";
 }
 
 function getStatusClass(total: number) {
   if (total === 0) return "bg-red-50 text-red-700";
-  if (total <= 2) return "bg-amber-50 text-amber-700";
+  if (total <= 1) return "bg-amber-50 text-amber-700";
   return "bg-green-50 text-green-700";
 }
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -23,24 +23,28 @@ export default function MyStockTable({
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950">My Stock</h2>
+          <h2 className="text-2xl font-bold text-slate-950">
+            Môj prehľad produktov
+          </h2>
 
           <p className="mt-1 text-sm text-slate-500">
-            Manage your current inventory
+            Spravuj svoj aktuálny inventár
           </p>
         </div>
 
         <button className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover">
-          Add product
+          Pridať produkt
         </button>
       </div>
 
       {items.length === 0 ? (
         <div className="rounded-2xl bg-slate-50 p-8 text-center">
-          <p className="font-semibold text-slate-700">Your stock is empty.</p>
+          <p className="font-semibold text-slate-700">
+            V sklade nemáte žiadne produkty.
+          </p>
 
           <p className="mt-1 text-sm text-slate-500">
-            Add a product from the catalog.
+            Pridať produkt z katalógu.
           </p>
         </div>
       ) : (
@@ -48,14 +52,14 @@ export default function MyStockTable({
           <table className="w-full min-w-[850px] border-separate border-spacing-y-3">
             <thead>
               <tr className="text-left text-sm text-slate-500">
-                <th className="px-4 font-medium">Code</th>
-                <th className="px-4 font-medium">Product</th>
-                <th className="px-4 font-medium">Type</th>
-                <th className="px-4 font-medium">Full</th>
-                <th className="px-4 font-medium">Opened</th>
-                <th className="px-4 font-medium">Total</th>
-                <th className="px-4 font-medium">Status</th>
-                <th className="px-4 text-right font-medium">Actions</th>
+                <th className="px-4 font-medium">Kód</th>
+                <th className="px-4 font-medium">Produkt</th>
+                <th className="px-4 font-medium">Typ</th>
+                <th className="px-4 font-medium">Zatvorené</th>
+                <th className="px-4 font-medium">Otvorené</th>
+                <th className="px-4 font-medium">Celkový počet ks</th>
+                <th className="px-4 font-medium">Stav</th>
+                <th className="px-4 text-right font-medium">Akcia</th>
               </tr>
             </thead>
 
@@ -75,7 +79,7 @@ export default function MyStockTable({
                       </p>
 
                       <p className="text-sm text-slate-500">
-                        Stock ID: {item.id}
+                        Produkt ID: {item.id}
                       </p>
                     </td>
 

@@ -19,28 +19,29 @@ export default function ForgotPassword() {
       setLoading(true);
 
       if (!email.trim()) {
-        setError("Email is required.");
+        setError("Email je povinný.");
         return;
       }
 
       const emailRegex = /\S+@\S+\.\S+/;
 
       if (!emailRegex.test(email)) {
-        setError("Invalid email format.");
+        setError("Zadajte platnú e-mailovú adresu.");
         return;
       }
 
       const data = await forgotPasswordRequest(email.trim());
 
       setMessage(
-        data.message || "If this email exists, reset instructions were sent.",
+        data.message ||
+          "Ak účet s týmto e-mailom existuje, poslali sme vám pokyny na obnovenie hesla.",
       );
       setEmail("");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Failed to send reset code.");
+        setError("Kód na obnovenie hesla sa nepodarilo odoslať.");
       }
     } finally {
       setLoading(false);
@@ -55,13 +56,15 @@ export default function ForgotPassword() {
           className="mb-10 inline-flex items-center gap-2 font-semibold text-slate-500 hover:text-primary"
         >
           <ArrowLeft size={20} />
-          Back to sign in
+          Späť na prihlásenie
         </Link>
 
-        <h2 className="text-5xl font-bold text-slate-950">Forgot password?</h2>
+        <h2 className="text-5xl font-bold text-slate-950">
+          Zabudli ste heslo?
+        </h2>
 
         <p className="mt-4 text-xl text-slate-500">
-          Enter your email and we&apos;ll send you a reset code.
+          Zadajte svoj e-mail a pošleme vám kód na obnovenie hesla.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-12 space-y-8">
@@ -77,7 +80,7 @@ export default function ForgotPassword() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
-                placeholder="you@example.com"
+                placeholder="meno@priklad.sk"
                 className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
               />
             </div>
@@ -98,14 +101,14 @@ export default function ForgotPassword() {
             disabled={loading}
             className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:opacity-50"
           >
-            {loading ? "Sending..." : "Send reset code"}
+            {loading ? "Odosielam..." : "Odoslať kód"}
           </button>
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
-          Remember your password?{" "}
+          Spomenuli ste si na heslo?{" "}
           <Link to="/sign-in" className="font-semibold text-primary">
-            Sign in
+            Prihláste sa
           </Link>
         </p>
       </div>

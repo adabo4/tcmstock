@@ -19,10 +19,12 @@ export default function CatalogCards({
   if (products.length === 0) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center">
-        <p className="font-semibold text-slate-800">No products found.</p>
+        <p className="font-semibold text-slate-800">
+          Nenašli sa žiadne produkty.
+        </p>
 
         <p className="mt-1 text-sm text-slate-500">
-          Try changing the search or product type.
+          Skúste zmeniť vyhľadávanie alebo typ produktu.
         </p>
       </div>
     );

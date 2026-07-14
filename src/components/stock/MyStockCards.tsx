@@ -12,11 +12,11 @@ export default function MyStockCards({
     return (
       <div className="rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center">
         <p className="font-semibold text-slate-800">
-          No products in your stock
+          Na sklade nie sú žiadne produkty.
         </p>
 
         <p className="mt-1 text-sm text-slate-500">
-          Add products from the catalog.
+          Pridať produkt z katalógu.
         </p>
       </div>
     );

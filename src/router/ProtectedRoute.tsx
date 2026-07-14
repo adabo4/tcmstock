@@ -5,7 +5,7 @@ export default function ProtectedRoute() {
   const { token, loading } = useAuth();
 
   if (loading) {
-    return <div className="p-10">Loading...</div>;
+    return <div className="p-10">Načítavam...</div>;
   }
 
   if (!token) {

@@ -77,9 +77,9 @@ export default function SignIn() {
   return (
     <AuthLayout>
       <div>
-        <h2 className="text-5xl font-bold text-slate-950">Sign in</h2>
+        <h2 className="text-5xl font-bold text-slate-950">Prihlásenie</h2>
         <p className="mt-4 text-xl text-slate-500">
-          Welcome back! Please sign in to your account.
+          Vitajte späť! Prihláste sa do svojho účtu.
         </p>
 
         <form onSubmit={handleSignIn} className="mt-12 space-y-8">
@@ -101,7 +101,7 @@ export default function SignIn() {
 
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Password
+              Heslo
             </label>
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <Lock className="text-slate-500" size={24} />
@@ -112,7 +112,7 @@ export default function SignIn() {
 
           <div className="flex items-center justify-between text-base">
             <Link to="/forgot-password" className="font-medium text-blue-700">
-              Forgot password?
+              Zabudli ste heslo?
             </Link>
           </div>
           {error && (
@@ -138,14 +138,14 @@ export default function SignIn() {
             disabled={loading}
             className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:opacity-50"
           >
-            {loading ? "Signing in..." : "Sign in"}
+            {loading ? "Prihlasovanie..." : "Prihlásiť sa"}
           </button>
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
-          Don&apos;t have an account?{" "}
+          Nemáte ešte účet?{" "}
           <Link to="/sign-up" className="font-semibold text-blue-700">
-            Sign up
+            Zaregistrujte sa.
           </Link>
         </p>
       </div>

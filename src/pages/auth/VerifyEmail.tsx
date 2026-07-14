@@ -42,12 +42,12 @@ export default function VerifyEmail() {
         email.trim().toLowerCase(),
       );
 
-      setResendMessage(response.message || "A new verification code was sent.");
+      setResendMessage(response.message || "Nový overovací kód bol odoslaný.");
     } catch (error) {
       setError(
         error instanceof Error
           ? error.message
-          : "Unable to resend verification code.",
+          : "Overovací kód sa nepodarilo odoslať znova.",
       );
     } finally {
       setResendLoading(false);
@@ -61,12 +61,12 @@ export default function VerifyEmail() {
     setMessage("");
 
     if (!email.trim()) {
-      setError("Email is required.");
+      setError("Email je povinný.");
       return;
     }
 
     if (code.trim().length !== 6) {
-      setError("Verification code must have 6 digits.");
+      setError("Overovací kód musí obsahovať 6 číslic.");
       return;
     }
 
@@ -75,13 +75,15 @@ export default function VerifyEmail() {
 
       const response = await verifyEmailRequest(email.trim(), code.trim());
 
-      setMessage(response.message || "Email verified successfully.");
+      setMessage(response.message || "E-mail bol úspešne overený.");
 
       setTimeout(() => {
         navigate("/sign-in");
       }, 1200);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verification failed.");
+      setError(
+        err instanceof Error ? err.message : "Overenie e-mailu zlyhalo.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -94,29 +96,29 @@ export default function VerifyEmail() {
           <MailCheck size={42} />
         </div>
 
-        <h2 className="text-5xl font-bold text-slate-950">Verify email</h2>
+        <h2 className="text-5xl font-bold text-slate-950">Overenie e-mailu</h2>
 
         <p className="mt-4 text-xl text-slate-500">
-          Enter the 6-digit code we sent to your email.
+          Zadajte 6-miestny kód, ktorý sme vám poslali na e-mail.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-12 space-y-7">
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Email
+              E-mail
             </label>
             <input
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               type="email"
-              placeholder="you@example.com"
+              placeholder="meno@priklad.sk"
               className="h-16 w-full rounded-xl border border-slate-300 px-5 text-lg outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
             />
           </div>
 
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Verification code
+              Overovací kód
             </label>
             <input
               value={code}
@@ -146,7 +148,7 @@ export default function VerifyEmail() {
             disabled={isLoading}
             className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            {isLoading ? "Verifying..." : "Verify email"}
+            {isLoading ? "Overujem..." : "Overiť e-mail"}
           </button>
 
           <button
@@ -155,7 +157,7 @@ export default function VerifyEmail() {
             onClick={handleResendCode}
             className="w-full rounded-xl border border-slate-300 px-4 py-3 font-semibold text-primary transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {resendLoading ? "Sending..." : "Resend verification code"}
+            {resendLoading ? "Odosielam..." : "Odoslať nový overovací kód"}
           </button>
 
           {resendMessage && (
@@ -165,7 +167,7 @@ export default function VerifyEmail() {
           )}
 
           <p className="text-center text-sm leading-6 text-slate-500">
-            If you still do not receive the code, contact{" "}
+            Ak vám kód stále neprišiel, kontaktujte nás na{" "}
             <a
               href="mailto:support@tcmstock.com"
               className="font-semibold text-primary"
@@ -176,9 +178,9 @@ export default function VerifyEmail() {
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
-          Already verified?{" "}
+          E-mail už máte overený?{" "}
           <Link to="/sign-in" className="font-semibold text-primary">
-            Sign in
+            Prihláste sa
           </Link>
         </p>
       </div>

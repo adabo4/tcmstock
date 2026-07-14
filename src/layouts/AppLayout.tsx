@@ -40,7 +40,7 @@ export default function AppLayout() {
           </div>
 
           <div>
-            <p className="text-lg font-bold text-slate-950">Pill Inventory</p>
+            <p className="text-lg font-bold text-slate-950">Správa zásob</p>
             <p className="text-sm text-slate-500">TCM Stock</p>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function AppLayout() {
             to="/dashboard"
             icon={<LayoutDashboard size={20} />}
           >
-            Dashboard
+            Prehľad
           </SidebarLink>
 
           <SidebarLink
@@ -59,7 +59,7 @@ export default function AppLayout() {
             to="/tablets/catalog"
             icon={<Package size={20} />}
           >
-            Catalog
+            Katálóg produktov
           </SidebarLink>
 
           <SidebarLink
@@ -67,7 +67,7 @@ export default function AppLayout() {
             to="/settings"
             icon={<Settings size={20} />}
           >
-            Settings
+            Nastavenia
           </SidebarLink>
         </nav>
 
@@ -76,7 +76,7 @@ export default function AppLayout() {
           className="absolute bottom-6 left-6 right-6 flex h-12 items-center gap-3 rounded-xl px-4 text-slate-500 hover:bg-slate-100"
         >
           <LogOut size={20} />
-          Sign out
+          Odhlásiť sa
         </button>
       </aside>
 

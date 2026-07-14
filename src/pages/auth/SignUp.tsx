@@ -34,7 +34,7 @@ export default function SignUp() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Registration failed.");
+        setError("Účet sa nepodarilo vytvoriť.");
       }
     } finally {
       setLoading(false);
@@ -43,15 +43,15 @@ export default function SignUp() {
   return (
     <AuthLayout>
       <div>
-        <h2 className="text-5xl font-bold text-slate-950">
-          Create your account
-        </h2>
-        <p className="mt-4 text-xl text-slate-500">Sign up to get started</p>
+        <h2 className="text-5xl font-bold text-slate-950">Vytvorte si účet.</h2>
+        <p className="mt-4 text-xl text-slate-500">
+          Zaregistrujte sa a začnite spravovať svoje zásoby.
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-12 space-y-8">
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Full Name
+              Celé meno
             </label>
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <User className="text-slate-500" size={24} />
@@ -59,7 +59,7 @@ export default function SignUp() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 type="text"
-                placeholder="Your name"
+                placeholder="Vaše meno"
                 className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
               />
             </div>
@@ -75,7 +75,7 @@ export default function SignUp() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
-                placeholder="you@example.com"
+                placeholder="meno@príklad.com"
                 className="h-16 flex-1 bg-transparent px-4 text-lg outline-none"
               />
             </div>
@@ -83,7 +83,7 @@ export default function SignUp() {
 
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Password
+              Heslo
             </label>
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
               <Lock className="text-slate-500" size={24} />
@@ -103,14 +103,14 @@ export default function SignUp() {
             disabled={loading}
             className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:opacity-50"
           >
-            {loading ? "Creating account..." : "Sign up"}
+            {loading ? "Vytváram účet..." : "Vytvoriť účet"}
           </button>
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
-          Already have an account?{" "}
+          Už máte svoj účet?{" "}
           <Link to="/sign-in" className="font-semibold text-blue-700">
-            Sign in
+            Prihláste sa.
           </Link>
         </p>
       </div>

@@ -15,12 +15,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               <Pill size={42} />
             </div>
 
-            <h1 className="text-4xl font-bold text-blue-700">Pill Inventory</h1>
+            <h1 className="text-4xl font-bold text-blue-700">
+              Zásoby produktov
+            </h1>
             <p className="mt-4 text-xl text-blue-700">TCM Stock Management</p>
 
             <p className="mt-10 max-w-sm text-xl leading-relaxed text-slate-700">
-              Manage your traditional Chinese medicine inventory easily and
-              efficiently.
+              Spravujte svoje zásoby produktov TČM jednoducho a efektívne.
             </p>
           </div>
 

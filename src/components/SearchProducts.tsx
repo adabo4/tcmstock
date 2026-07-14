@@ -15,7 +15,7 @@ export default function SearchProducts({
   setSearch,
   type,
   setType,
-  placeholder = "Search by code, name or type...",
+  placeholder = "Nájdi podľa názvu alebo kódu...",
   showCategoryButton = true,
 }: SearchProductsProps) {
   return (
@@ -50,7 +50,7 @@ export default function SearchProducts({
             onChange={(e) => setType(e.target.value as ProductType | "")}
             className="h-14 rounded-xl border border-slate-200 px-4"
           >
-            <option value="">All types</option>
+            <option value="">Všetky typy</option>
 
             {Object.entries(PRODUCT_TYPE_LABELS).map(([value, label]) => (
               <option key={value} value={value}>
@@ -62,7 +62,7 @@ export default function SearchProducts({
           {showCategoryButton && (
             <button className="flex h-14 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 font-semibold text-slate-800 hover:bg-slate-50">
               <ShoppingCart size={20} />
-              All Categories
+              Všetky kategórie
               <ChevronDown size={18} />
             </button>
           )}

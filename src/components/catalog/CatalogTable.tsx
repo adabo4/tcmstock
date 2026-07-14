@@ -17,10 +17,10 @@ export default function CatalogTable({
         <table className="w-full min-w-[900px]">
           <thead className="bg-white">
             <tr className="border-b border-slate-200 text-left text-sm font-semibold text-slate-500">
-              <th className="px-8 py-5">Code</th>
-              <th className="px-8 py-5">Name ↑</th>
-              <th className="px-8 py-5">Type</th>
-              <th className="px-8 py-5 text-right">Add</th>
+              <th className="px-8 py-5">Kód</th>
+              <th className="px-8 py-5">Názov ↑</th>
+              <th className="px-8 py-5">Typ</th>
+              <th className="px-8 py-5 text-right">Pridať produkt</th>
             </tr>
           </thead>
 
@@ -52,7 +52,7 @@ export default function CatalogTable({
                     className="inline-flex h-12 items-center gap-2 rounded-xl border border-primary px-4 font-bold text-primary transition hover:bg-blue hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <ShoppingCart size={18} />
-                    Add
+                    Pridať
                   </button>
 
                   {selectedProduct?.id === product.id && (

@@ -105,7 +105,7 @@ export default function Pagination({
   return (
     <div className="mt-5 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-slate-500">
-        Showing {start} to {end} of {total} {itemLabel}
+        Zobrazených {start} - {end} z {total} {itemLabel}
       </p>
 
       <div className="flex flex-wrap items-center gap-2">

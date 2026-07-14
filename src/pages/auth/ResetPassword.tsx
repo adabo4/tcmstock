@@ -29,22 +29,22 @@ export default function ResetPassword() {
       setMessage("");
 
       if (!token) {
-        setError("Reset token is missing.");
+        setError("Chýba token na obnovenie hesla.");
         return;
       }
 
       if (!newPassword.trim()) {
-        setError("New password is required.");
+        setError("Nové heslo je povinné.");
         return;
       }
 
       if (newPassword.trim().length < 6) {
-        setError("Password must be at least 6 characters.");
+        setError("Heslo musí obsahovať aspoň 6 znakov.");
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        setError("Passwords do not match.");
+        setError("Heslá sa nezhodujú.");
         return;
       }
 
@@ -59,7 +59,7 @@ export default function ResetPassword() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Reset password failed.");
+        setError("Nepodarilo sa obnoviť heslo.");
       }
     } finally {
       setLoading(false);
@@ -73,15 +73,18 @@ export default function ResetPassword() {
           className="mb-10 inline-flex items-center gap-2 font-semibold text-slate-500 hover:text-primary"
         >
           <ArrowLeft size={20} />
-          Back to sign in
+          Späť na prihlásenie
         </Link>
 
-        <h2 className="text-5xl font-bold text-slate-950">Reset password</h2>
+        <h2 className="text-5xl font-bold text-slate-950">Obnovenie hesla</h2>
+        <p className="mt-4 text-xl text-slate-500">
+          Zadajte nové heslo pre svoj účet.
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-12 space-y-8">
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              New password
+              Nové heslo
             </label>
 
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
@@ -95,7 +98,7 @@ export default function ResetPassword() {
 
           <div>
             <label className="mb-3 block font-semibold text-slate-950">
-              Confirm password
+              Potvrdenie hesla
             </label>
 
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
@@ -117,14 +120,14 @@ export default function ResetPassword() {
           ) : null}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Resetting password..." : "Reset password"}
+            {loading ? "Obnovujem heslo..." : "Obnoviť heslo"}
           </button>
         </form>
 
         <p className="mt-10 text-center text-lg text-slate-500">
-          Remember your password?{" "}
+          Spomenuli ste si na heslo?{" "}
           <Link to="/sign-in" className="font-semibold text-primary">
-            Sign in
+            Prihláste sa
           </Link>
         </p>
       </div>

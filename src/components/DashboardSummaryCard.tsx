@@ -35,7 +35,7 @@ export default function DashboardSummaryCard({
 
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white">
-              Pill Inventory
+              Prehľad zásob
             </h2>
 
             <p className="mt-1 text-sm sm:text-base text-white/80">
@@ -58,19 +58,19 @@ export default function DashboardSummaryCard({
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <DashboardStatCard
           number={totalItems}
-          label="Total Items"
+          label="Celkový počet kusov"
           icon={<Box size={28} className="text-white" />}
         />
 
         <DashboardStatCard
           number={lowStock}
-          label="Low Stock"
+          label="Dochádzajúce zásoby"
           icon={<AlertTriangle size={28} className="text-yellow-300" />}
         />
 
         <DashboardStatCard
           number={outOfStock}
-          label="Out of Stock"
+          label="Vypredané"
           icon={<CircleMinus size={28} className="text-red-300" />}
         />
       </div>

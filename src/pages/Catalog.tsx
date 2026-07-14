@@ -109,9 +109,9 @@ export default function Catalog() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-950">Catalog</h1>
+        <h1 className="text-4xl font-bold text-slate-950">Katalóg produktov</h1>
         <p className="mt-2 text-lg text-slate-500">
-          Select products from the catalog and add them to your inventory.
+          Vyberte produkty z katalógu a pridajte ich do svojho skladu.
         </p>
       </div>
 
@@ -120,13 +120,12 @@ export default function Catalog() {
         setSearch={handleSearchChange}
         type={type}
         setType={handleTypeChange}
-        placeholder="Vyhľadaj podľa názvu, kódu aleby typu..."
         showCategoryButton={false}
       />
 
       {loading && (
         <p className="mb-4 rounded-xl bg-white p-4 text-slate-500">
-          Loading catalog...
+          Načítavam katalóg...
         </p>
       )}
 
@@ -161,7 +160,7 @@ export default function Catalog() {
             total={total}
             itemsPerPage={ITEMS_PER_PAGE}
             onPageChange={setCurrentPage}
-            itemLabel="products"
+            itemLabel="produktov"
           />
         </>
       )}
