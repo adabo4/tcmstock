@@ -1,52 +1,48 @@
 import { useState } from "react";
 
 import type { CatalogProduct } from "../../types/product";
-import { addToMyStockRequest } from "../../api/stock";
 import QuantityStepper from "./QuantityStepper";
-import { useNotification } from "../../context/useNotification";
 
 type AddToInventoryPopoverProps = {
   product: CatalogProduct;
+  adding: boolean;
   onClose: () => void;
-  onAdded?: () => void;
+  onAdd: (
+    product: CatalogProduct,
+    fullQuantity: number,
+    openedQuantity: number,
+  ) => Promise<void>;
 };
 
 export default function AddToInventoryPopover({
   product,
+  adding,
   onClose,
-  onAdded,
+  onAdd,
 }: AddToInventoryPopoverProps) {
   const [fullQuantity, setFullQuantity] = useState(0);
   const [openedQuantity, setOpenedQuantity] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const { showNotification } = useNotification();
-
   async function handleAddToStock() {
+    if (fullQuantity <= 0 && openedQuantity <= 0) {
+      setError("Select at least one package.");
+      return;
+    }
+
     try {
-      setIsSubmitting(true);
       setError("");
 
-      await addToMyStockRequest({
-        tabletCatalogId: product.id,
-        fullQuantity,
-        openedQuantity,
-      });
+      await onAdd(product, fullQuantity, openedQuantity);
 
-      showNotification("Stock updated successfully.", "success");
-
-      onAdded?.();
+      setFullQuantity(0);
+      setOpenedQuantity(0);
 
       onClose();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to update stock.";
-
-      setError(message);
-      showNotification(message, "error");
-    } finally {
-      setIsSubmitting(false);
+      setError(
+        error instanceof Error ? error.message : "Failed to update stock.",
+      );
     }
   }
 
@@ -70,7 +66,7 @@ export default function AddToInventoryPopover({
               setFullQuantity((previous) => Math.max(0, previous - 1))
             }
             onIncrease={() => setFullQuantity((previous) => previous + 1)}
-            disabled={isSubmitting}
+            disabled={adding}
           />
         </div>
 
@@ -83,7 +79,7 @@ export default function AddToInventoryPopover({
               setOpenedQuantity((previous) => Math.max(0, previous - 1))
             }
             onIncrease={() => setOpenedQuantity((previous) => previous + 1)}
-            disabled={isSubmitting}
+            disabled={adding}
           />
         </div>
       </div>
@@ -98,7 +94,7 @@ export default function AddToInventoryPopover({
         <button
           type="button"
           onClick={onClose}
-          disabled={isSubmitting}
+          disabled={adding}
           className="h-12 rounded-xl border border-slate-200 px-6 font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
         >
           Cancel
@@ -106,13 +102,11 @@ export default function AddToInventoryPopover({
 
         <button
           type="button"
-          onClick={handleAddToStock}
-          disabled={
-            isSubmitting || (fullQuantity === 0 && openedQuantity === 0)
-          }
+          onClick={() => void handleAddToStock()}
+          disabled={adding || (fullQuantity === 0 && openedQuantity === 0)}
           className="h-12 rounded-xl bg-blue px-6 font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
         >
-          {isSubmitting ? "Adding..." : "Add to stock"}
+          {adding ? "Adding..." : "Add to stock"}
         </button>
       </div>
     </div>

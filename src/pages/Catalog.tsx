@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { CatalogProduct, ProductType } from "../types/product";
 import { getCatalogRequest } from "../api/catalog";
-import { PRODUCT_TYPE_LABELS } from "../types/product";
 import SearchProducts from "../components/SearchProducts";
-import AddToInventoryPopover from "../components/stock/AddToInventoryPopover";
+import { useNotification } from "../context/useNotification";
+import { addToMyStockRequest } from "../api/stock";
+import CatalogTable from "../components/catalog/CatalogTable";
+import CatalogCards from "../components/catalog/CatalogCards";
 
+const ITEMS_PER_PAGE = 15;
 export default function Catalog() {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
-  const ITEMS_PER_PAGE = 15;
 
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
     null,
@@ -23,6 +24,10 @@ export default function Catalog() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [type, setType] = useState<ProductType | "">("");
+
+  const [addingProductId, setAddingProductId] = useState<number | null>(null);
+
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     async function loadCatalog() {
@@ -70,6 +75,37 @@ export default function Catalog() {
     return () => clearTimeout(timeout);
   }, [search]);
 
+  async function handleAddProduct(
+    product: CatalogProduct,
+    fullQuantity: number,
+    openedQuantity: number,
+  ) {
+    if (fullQuantity <= 0 && openedQuantity <= 0) {
+      return;
+    }
+
+    try {
+      setAddingProductId(product.id);
+
+      await addToMyStockRequest({
+        tabletCatalogId: product.id,
+        fullQuantity,
+        openedQuantity,
+      });
+
+      showNotification("Stock updated successfully.", "success");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to add product.";
+
+      showNotification(message, "error");
+
+      throw error;
+    } finally {
+      setAddingProductId(null);
+    }
+  }
+
   return (
     <div>
       <div className="mb-8">
@@ -87,112 +123,76 @@ export default function Catalog() {
         placeholder="Vyhľadaj podľa názvu, kódu aleby typu..."
       />
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          {loading && (
-            <p className="mb-4 rounded-xl bg-white p-4 text-slate-500">
-              Loading catalog...
-            </p>
-          )}
+      {loading && (
+        <p className="mb-4 rounded-xl bg-white p-4 text-slate-500">
+          Loading catalog...
+        </p>
+      )}
 
-          {error && (
-            <p className="mb-4 rounded-xl bg-red-50 p-4 text-red-600">
-              {error}
-            </p>
-          )}
-          <table className="w-full min-w-[900px]">
-            <thead className="bg-white">
-              <tr className="border-b border-slate-200 text-left text-sm font-semibold text-slate-500">
-                <th className="px-8 py-5">Code</th>
-                <th className="px-8 py-5">Name ↑</th>
-                <th className="px-8 py-5">Type</th>
-                <th className="px-8 py-5 text-right">Add</th>
-              </tr>
-            </thead>
+      {!loading && error && (
+        <p className="mb-4 rounded-xl bg-red-50 p-4 text-red-600">{error}</p>
+      )}
 
-            <tbody>
-              {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/60"
-                >
-                  <td className="px-8 py-5">
-                    <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-bold text-slate-700">
-                      {product.code}
-                    </span>
-                  </td>
-
-                  <td className="px-8 py-5">
-                    <p className="font-bold text-slate-950">{product.name}</p>
-                  </td>
-
-                  <td className="px-8 py-5 text-slate-600">
-                    {PRODUCT_TYPE_LABELS[product.productType]}
-                  </td>
-
-                  <td className="relative px-8 py-5 text-right">
-                    <button
-                      onClick={() => setSelectedProduct(product)}
-                      className="inline-flex h-12 items-center gap-2 rounded-xl border border-primary px-4 font-bold text-primary transition hover:bg-blue hover:text-white"
-                    >
-                      <ShoppingCart size={18} />
-                      Add
-                    </button>
-
-                    {selectedProduct?.id === product.id && (
-                      <AddToInventoryPopover
-                        product={product}
-                        onClose={() => setSelectedProduct(null)}
-                        onAdded={() => {
-                          console.log("Product added successfully");
-                        }}
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex flex-col gap-4 border-t border-slate-100 px-8 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">
-            Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}{" "}
-            to {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total}{" "}
-            products
-          </p>
-
-          <div className="flex items-center gap-2">
-            <PaginationButton
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              <ChevronLeft size={18} />
-            </PaginationButton>
-
-            {Array.from({ length: totalPages }, (_, index) => {
-              const page = index + 1;
-
-              return (
-                <PaginationButton
-                  key={page}
-                  active={currentPage === page}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </PaginationButton>
-              );
-            })}
-
-            <PaginationButton
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
-              <ChevronRight size={18} />
-            </PaginationButton>
+      {!loading && !error && (
+        <>
+          <div className="hidden md:block">
+            <CatalogTable
+              products={products}
+              selectedProduct={selectedProduct}
+              addingProductId={addingProductId}
+              onSelectProduct={setSelectedProduct}
+              onCloseProduct={() => setSelectedProduct(null)}
+              onAdd={handleAddProduct}
+            />
           </div>
-        </div>
-      </section>
+
+          <div className="md:hidden">
+            <CatalogCards
+              products={products}
+              addingProductId={addingProductId}
+              onAdd={handleAddProduct}
+            />
+          </div>
+
+          <div className="flex flex-col gap-4 border-t border-slate-100 px-8 py-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-slate-500">
+              Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}{" "}
+              to {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total}{" "}
+              products
+            </p>
+
+            <div className="flex items-center gap-2">
+              <PaginationButton
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+              >
+                <ChevronLeft size={18} />
+              </PaginationButton>
+
+              {Array.from({ length: totalPages }, (_, index) => {
+                const page = index + 1;
+
+                return (
+                  <PaginationButton
+                    key={page}
+                    active={currentPage === page}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </PaginationButton>
+                );
+              })}
+
+              <PaginationButton
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+              >
+                <ChevronRight size={18} />
+              </PaginationButton>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
