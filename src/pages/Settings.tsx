@@ -166,6 +166,9 @@ export default function Settings() {
         <button className="border-b-2 border-primary px-1 pb-4 font-semibold text-primary">
           Profil
         </button>
+        <button className="border-b-2 border-primary px-1 pb-4 font-semibold text-primary">
+          Nastavenia skladu
+        </button>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">

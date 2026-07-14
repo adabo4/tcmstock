@@ -13,6 +13,9 @@ import {
 import { useNotification } from "../context/useNotification";
 import MyStockCards from "../components/stock/MyStockCards";
 import Pagination from "../components/Pagination";
+import StockLocationSelect from "../components/stock/StockLocationSelect";
+import { useStockLocation } from "../context/useStockLocation";
+import { useNavigate } from "react-router-dom";
 const ITEMS_PER_PAGE = 15;
 
 export default function Dashboard() {
@@ -28,6 +31,13 @@ export default function Dashboard() {
   const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
   const { showNotification } = useNotification();
+
+  const [, setCreateLocationOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const { locations, activeLocationId, setActiveLocationId } =
+    useStockLocation();
 
   const { user } = useAuth();
 
@@ -178,6 +188,13 @@ export default function Dashboard() {
 
   return (
     <>
+      <StockLocationSelect
+        locations={locations}
+        activeLocationId={activeLocationId}
+        onChange={setActiveLocationId}
+        onCreate={() => setCreateLocationOpen(true)}
+        onManage={() => navigate("/settings?section=stock-locations")}
+      />
       <h1 className="mb-1 ml-15 lg:ml-0 text-5xl font-bold">Prehľad</h1>
       <p className="mb-8 ml-15 lg:ml-0 text-slate-500">
         Prehľad vašich zásob produktov
