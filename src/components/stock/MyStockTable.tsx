@@ -11,6 +11,7 @@ function getStatusClass(total: number) {
 }
 import { Minus, Plus, Trash2 } from "lucide-react";
 import type { MyStockViewProps } from "../../types/stock";
+import { PRODUCT_TYPE_LABELS } from "../../types/product";
 
 export default function MyStockTable({
   items,
@@ -84,7 +85,7 @@ export default function MyStockTable({
                     </td>
 
                     <td className="px-4 py-4 text-slate-600">
-                      {item.tabletCatalog.productType}
+                      {PRODUCT_TYPE_LABELS[item.tabletCatalog.productType]}
                     </td>
 
                     <td className="px-4 py-4">

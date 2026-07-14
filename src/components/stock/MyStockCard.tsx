@@ -15,22 +15,22 @@ function getStockStatus(item: MyStockItem) {
 
   if (total === 0) {
     return {
-      label: "Out of stock",
+      label: "Vypredané",
       icon: AlertCircle,
       className: "bg-red-50 text-red-600",
     };
   }
 
-  if (total <= 2) {
+  if (total <= 1) {
     return {
-      label: "Low stock",
+      label: "Dochádza",
       icon: Clock3,
       className: "bg-amber-50 text-amber-600",
     };
   }
 
   return {
-    label: "In stock",
+    label: "Na sklade",
     icon: CheckCircle2,
     className: "bg-green-50 text-green-600",
   };
@@ -75,7 +75,7 @@ export default function MyStockCard({
                 <strong className="text-base text-slate-900">
                   {item.fullQuantity}
                 </strong>{" "}
-                full
+                zatvorené
               </span>
 
               <span aria-hidden="true">•</span>
@@ -84,7 +84,7 @@ export default function MyStockCard({
                 <strong className="text-base text-slate-900">
                   {item.openedQuantity}
                 </strong>{" "}
-                opened
+                otvorené
               </span>
             </div>
 
@@ -125,7 +125,7 @@ export default function MyStockCard({
       {isOpen && (
         <div className="border-t border-slate-200 px-5 py-4">
           <QuantityRow
-            label="Full packages"
+            label="Zatvorené balenia"
             value={item.fullQuantity}
             onDecrease={() =>
               onQuantityChange(
@@ -142,7 +142,7 @@ export default function MyStockCard({
           <div className="my-4 border-t border-slate-100" />
 
           <QuantityRow
-            label="Opened packages"
+            label="Otvorené balenia"
             value={item.openedQuantity}
             onDecrease={() =>
               onQuantityChange(
