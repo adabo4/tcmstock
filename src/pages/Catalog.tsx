@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { CatalogProduct, ProductType } from "../types/product";
 import { getCatalogRequest } from "../api/catalog";
 import SearchProducts from "../components/SearchProducts";
@@ -7,6 +6,7 @@ import { useNotification } from "../context/useNotification";
 import { addToMyStockRequest } from "../api/stock";
 import CatalogTable from "../components/catalog/CatalogTable";
 import CatalogCards from "../components/catalog/CatalogCards";
+import Pagination from "../components/Pagination";
 
 const ITEMS_PER_PAGE = 15;
 export default function Catalog() {
@@ -121,6 +121,7 @@ export default function Catalog() {
         type={type}
         setType={handleTypeChange}
         placeholder="Vyhľadaj podľa názvu, kódu aleby typu..."
+        showCategoryButton={false}
       />
 
       {loading && (
@@ -154,76 +155,16 @@ export default function Catalog() {
             />
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-slate-100 px-8 py-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-slate-500">
-              Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}{" "}
-              to {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total}{" "}
-              products
-            </p>
-
-            <div className="flex items-center gap-2">
-              <PaginationButton
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-              >
-                <ChevronLeft size={18} />
-              </PaginationButton>
-
-              {Array.from({ length: totalPages }, (_, index) => {
-                const page = index + 1;
-
-                return (
-                  <PaginationButton
-                    key={page}
-                    active={currentPage === page}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </PaginationButton>
-                );
-              })}
-
-              <PaginationButton
-                disabled={currentPage === totalPages || totalPages === 0}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
-                <ChevronRight size={18} />
-              </PaginationButton>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            total={total}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setCurrentPage}
+            itemLabel="products"
+          />
         </>
       )}
     </div>
-  );
-}
-
-type PaginationButtonProps = {
-  children: React.ReactNode;
-  active?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-};
-
-function PaginationButton({
-  children,
-  active,
-  disabled,
-  onClick,
-}: PaginationButtonProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={[
-        "flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold",
-        active
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-        disabled ? "cursor-not-allowed opacity-40" : "",
-      ].join(" ")}
-    >
-      {children}
-    </button>
   );
 }

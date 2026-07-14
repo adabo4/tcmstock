@@ -12,7 +12,7 @@ import {
 } from "../api/stock";
 import { useNotification } from "../context/useNotification";
 import MyStockCards from "../components/stock/MyStockCards";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import Pagination from "../components/Pagination";
 const ITEMS_PER_PAGE = 15;
 
 export default function Dashboard() {
@@ -28,8 +28,6 @@ export default function Dashboard() {
   const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
   const { showNotification } = useNotification();
-
-  // const [, setStockPage] = useState(1);
 
   const { user } = useAuth();
 
@@ -100,44 +98,6 @@ export default function Dashboard() {
       window.clearTimeout(timeoutId);
     };
   }, [loadStock]);
-
-  // async function handleDelete(itemId: number) {
-  //   const confirmed = window.confirm(
-  //     "Are you sure you want to remove this product from your stock?",
-  //   );
-
-  //   if (!confirmed) {
-  //     return;
-  //   }
-
-  //   try {
-  //     setDeletingItemId(itemId);
-  //     setError("");
-
-  //     await removeFromMyStockRequest(itemId);
-
-  //     const data = await getMyStockRequest({
-  //       search: stockSearch,
-  //       type: stockType || undefined,
-  //       page: currentPage,
-  //       limit: ITEMS_PER_PAGE,
-  //     });
-
-  //     setStock(data.items);
-  //     setTotal(data.total);
-  //     setTotalPages(data.totalPages);
-
-  //     showNotification("Product removed from stock.", "success");
-  //   } catch (error) {
-  //     const message =
-  //       error instanceof Error ? error.message : "Failed to remove product.";
-
-  //     setError(message);
-  //     showNotification(message, "error");
-  //   } finally {
-  //     setDeletingItemId(null);
-  //   }
-  // }
 
   async function handleDelete(item: MyStockItem) {
     const confirmed = window.confirm(
@@ -263,79 +223,17 @@ export default function Dashboard() {
               onDelete={handleDelete}
             />
           </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            total={total}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setCurrentPage}
+            itemLabel="products"
+          />
         </>
       )}
-
-      {!isLoading && !error && totalPages > 1 && (
-        <div className="mt-5 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">
-            Showing {total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}{" "}
-            to {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total}{" "}
-            products
-          </p>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <PaginationButton
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((page) => page - 1)}
-            >
-              <ChevronLeft size={18} />
-            </PaginationButton>
-
-            {Array.from({ length: totalPages }, (_, index) => {
-              const page = index + 1;
-
-              return (
-                <PaginationButton
-                  key={page}
-                  active={currentPage === page}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </PaginationButton>
-              );
-            })}
-
-            <PaginationButton
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((page) => page + 1)}
-            >
-              <ChevronRight size={18} />
-            </PaginationButton>
-          </div>
-        </div>
-      )}
     </>
-  );
-}
-
-type PaginationButtonProps = {
-  children: React.ReactNode;
-  active?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
-};
-
-function PaginationButton({
-  children,
-  active = false,
-  disabled = false,
-  onClick,
-}: PaginationButtonProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={[
-        "flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold transition",
-        active
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-        disabled ? "cursor-not-allowed opacity-40" : "",
-      ].join(" ")}
-    >
-      {children}
-    </button>
   );
 }
