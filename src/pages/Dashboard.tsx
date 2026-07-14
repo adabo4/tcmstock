@@ -36,7 +36,7 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
 
-  const { locations, activeLocationId, setActiveLocationId } =
+  const { locations, activeLocationId, setActiveLocationId, activeLocation } =
     useStockLocation();
 
   const { user } = useAuth();
@@ -75,6 +75,9 @@ export default function Dashboard() {
     setCurrentPage(1);
   }
   const loadStock = useCallback(async () => {
+    if (!activeLocationId) {
+      return;
+    }
     try {
       setIsLoading(true);
       setError("");
@@ -84,6 +87,7 @@ export default function Dashboard() {
         type: stockType || undefined,
         page: currentPage,
         limit: ITEMS_PER_PAGE,
+        stockLocationId: activeLocationId ?? undefined,
       });
 
       setStock(response.items);
@@ -99,7 +103,7 @@ export default function Dashboard() {
     } finally {
       setIsLoading(false);
     }
-  }, [stockSearch, stockType, currentPage]);
+  }, [stockSearch, stockType, currentPage, activeLocationId]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -132,7 +136,10 @@ export default function Dashboard() {
         await loadStock();
       }
 
-      showNotification("Produkt bol odstránený zo skladu.", "success");
+      showNotification(
+        `Produkt bol odstránený zo skladu ${activeLocation?.name ?? ""}.`,
+        "success",
+      );
     } catch (error) {
       const message =
         error instanceof Error
@@ -186,12 +193,17 @@ export default function Dashboard() {
     }
   }
 
+  function handleLocationChange(locationId: number) {
+    setActiveLocationId(locationId);
+    setCurrentPage(1);
+  }
+
   return (
     <>
       <StockLocationSelect
         locations={locations}
         activeLocationId={activeLocationId}
-        onChange={setActiveLocationId}
+        onChange={handleLocationChange}
         onCreate={() => setCreateLocationOpen(true)}
         onManage={() => navigate("/settings?section=stock-locations")}
       />

@@ -21,6 +21,7 @@ export type MyStockQuery = {
   type?: ProductType | "";
   page?: number;
   limit?: number;
+  stockLocationId?: number;
 };
 
 export type MyStockResponse = {
@@ -35,6 +36,7 @@ export type AddToStockDto = {
   tabletCatalogId: number;
   fullQuantity: number;
   openedQuantity: number;
+  stockLocationId?: number;
 };
 
 export type UpdateStockDto = {

@@ -7,6 +7,7 @@ import { addToMyStockRequest } from "../api/stock";
 import CatalogTable from "../components/catalog/CatalogTable";
 import CatalogCards from "../components/catalog/CatalogCards";
 import Pagination from "../components/Pagination";
+import { useStockLocation } from "../context/useStockLocation";
 
 const ITEMS_PER_PAGE = 15;
 export default function Catalog() {
@@ -28,6 +29,8 @@ export default function Catalog() {
   const [addingProductId, setAddingProductId] = useState<number | null>(null);
 
   const { showNotification } = useNotification();
+
+  const { activeLocationId, activeLocation } = useStockLocation();
 
   useEffect(() => {
     async function loadCatalog() {
@@ -84,6 +87,11 @@ export default function Catalog() {
       return;
     }
 
+    if (!activeLocationId) {
+      showNotification("Najprv vyberte sklad.", "error");
+      return;
+    }
+
     try {
       setAddingProductId(product.id);
 
@@ -91,9 +99,14 @@ export default function Catalog() {
         tabletCatalogId: product.id,
         fullQuantity,
         openedQuantity,
+        stockLocationId: activeLocationId,
       });
 
-      showNotification("Stock updated successfully.", "success");
+      // showNotification("Stock updated successfully.", "success");
+      showNotification(
+        `Produkt bol pridaný do skladu ${activeLocation?.name ?? ""}.`,
+        "success",
+      );
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to add product.";
