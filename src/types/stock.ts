@@ -41,3 +41,29 @@ export type UpdateStockDto = {
   fullQuantity?: number;
   openedQuantity?: number;
 };
+
+export type QuantityField = "fullQuantity" | "openedQuantity";
+
+export type MyStockViewProps = {
+  items: MyStockItem[];
+  updatingItemId: number | null;
+  deletingItemId: number | null;
+  onQuantityChange: (
+    item: MyStockItem,
+    field: QuantityField,
+    newValue: number,
+  ) => void | Promise<void>;
+  onDelete: (item: MyStockItem) => void | Promise<void>;
+};
+
+export type MyStockCardProps = {
+  item: MyStockItem;
+  updating: boolean;
+  deleting: boolean;
+  onQuantityChange: (
+    item: MyStockItem,
+    field: QuantityField,
+    newValue: number,
+  ) => void | Promise<void>;
+  onDelete: (item: MyStockItem) => void | Promise<void>;
+};
