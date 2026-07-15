@@ -16,6 +16,7 @@ import Pagination from "../components/Pagination";
 import StockLocationSelect from "../components/stock/StockLocationSelect";
 import { useStockLocation } from "../context/useStockLocation";
 import { useNavigate } from "react-router-dom";
+import CreateStockLocationModal from "../components/stock/CreateCtockLocationModal";
 const ITEMS_PER_PAGE = 15;
 
 export default function Dashboard() {
@@ -32,7 +33,7 @@ export default function Dashboard() {
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
   const { showNotification } = useNotification();
 
-  const [, setCreateLocationOpen] = useState(false);
+  const [createLocationOpen, setCreateLocationOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -268,6 +269,11 @@ export default function Dashboard() {
           />
         </>
       )}
+
+      <CreateStockLocationModal
+        open={createLocationOpen}
+        onClose={() => setCreateLocationOpen(false)}
+      />
     </>
   );
 }
