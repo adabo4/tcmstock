@@ -11,7 +11,8 @@ import { useState, type FormEvent } from "react";
 import { deleteAccountRequest, updateNameRequest } from "../api/auth";
 import { useNotification } from "../context/useNotification";
 import { changePasswordRequest } from "../api/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import StockLocationsSettings from "../components/settings/StockLocationSettings";
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
@@ -31,6 +32,13 @@ export default function Settings() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const section = searchParams.get("section");
+
+  const activeTab: "profile" | "stock" =
+    section === "stock-locations" ? "stock" : "profile";
 
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -163,140 +171,163 @@ export default function Settings() {
       </div>
 
       <div className="mb-8 flex gap-8 border-b border-slate-200">
-        <button className="border-b-2 border-primary px-1 pb-4 font-semibold text-primary">
-          Profil
-        </button>
-        <button className="border-b-2 border-primary px-1 pb-4 font-semibold text-primary">
-          Nastavenia skladu
-        </button>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-3">
-        <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <CardHeader
-            icon={<User />}
-            title="Údaje profilu"
-            subtitle="Aktualizujte svoje osobné údaje"
-          />
-
-          <form className="mt-8 space-y-6" onSubmit={handleNameSubmit}>
-            <label className="block">
-              <span className="mb-2 block font-semibold text-slate-800">
-                Meno a priezvisko:
-              </span>
-
-              <input
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="h-14 w-full rounded-xl border border-slate-200 px-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-
-            <label className="block">
-              <span className="mb-2 block font-semibold text-slate-800">
-                Email:
-              </span>
-
-              <input
-                value={user?.email ?? ""}
-                disabled
-                className="h-14 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-4 text-slate-500 outline-none"
-              />
-            </label>
-
-            {nameError && (
-              <p className="text-sm font-medium text-red-600">{nameError}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isSavingName}
-              className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isSavingName ? "Ukladám..." : "Uložiť zmeny"}
-            </button>
-          </form>
-        </section>
-
-        <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <CardHeader
-            icon={<Lock />}
-            title="Zmena hesla"
-            subtitle="Aktualizovať heslo"
-          />
-
-          <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
-            <PasswordInput
-              label="Aktuálne heslo:"
-              value={currentPassword}
-              onChange={setCurrentPassword}
-              autoComplete="current-password"
-            />
-
-            <PasswordInput
-              label="Nové heslo:"
-              value={newPassword}
-              onChange={setNewPassword}
-              autoComplete="new-password"
-            />
-
-            <PasswordInput
-              label="Potvrdenie:"
-              value={confirmPassword}
-              onChange={setConfirmPassword}
-              autoComplete="new-password"
-            />
-
-            {passwordError && (
-              <p className="text-sm font-medium text-red-600">
-                {passwordError}
-              </p>
-            )}
-
-            {passwordSuccess && (
-              <p className="text-sm font-medium text-green-600">
-                {passwordSuccess}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isChangingPassword}
-              className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isChangingPassword ? "Ukladám..." : "Uložiť heslo"}
-            </button>
-          </form>
-        </section>
-
-        <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <CardHeader
-            icon={<SettingsIcon />}
-            title="Účet"
-            subtitle="Nastavenia účtu"
-          />
-
-          <div className="mt-12 rounded-2xl border border-red-200 bg-red-50 p-6">
-            <div className="flex items-center gap-3 font-bold text-red-600">
-              <Trash2 size={20} />
-              Nebezpečná zóna
-            </div>
-
-            <p className="mt-4 leading-relaxed text-slate-600">
-              Odstránenie účtu je trvalé a nie je možné ho vrátiť späť.
-            </p>
-          </div>
+        <div className="mb-8 flex gap-8 border-b border-slate-200">
+          <button
+            type="button"
+            onClick={() => setSearchParams({})}
+            className={`border-b-2 px-1 pb-4 font-semibold transition ${
+              activeTab === "profile"
+                ? "border-primary text-primary"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            Profil
+          </button>
 
           <button
             type="button"
-            onClick={() => setShowDeleteConfirm(true)}
-            className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-red-300 px-6 font-semibold text-red-600 hover:bg-red-50"
+            onClick={() => setSearchParams({ section: "stock-locations" })}
+            className={`border-b-2 px-1 pb-4 font-semibold transition ${
+              activeTab === "stock"
+                ? "border-primary text-primary"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            }`}
           >
-            <Trash2 size={20} />
-            Vymazať účet
+            Nastavenia skladu
           </button>
-        </section>
+        </div>
       </div>
+
+      {activeTab === "profile" && (
+        <div className="grid gap-6 xl:grid-cols-3">
+          <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <CardHeader
+              icon={<User />}
+              title="Údaje profilu"
+              subtitle="Aktualizujte svoje osobné údaje"
+            />
+
+            <form className="mt-8 space-y-6" onSubmit={handleNameSubmit}>
+              <label className="block">
+                <span className="mb-2 block font-semibold text-slate-800">
+                  Meno a priezvisko:
+                </span>
+
+                <input
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  className="h-14 w-full rounded-xl border border-slate-200 px-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block font-semibold text-slate-800">
+                  Email:
+                </span>
+
+                <input
+                  value={user?.email ?? ""}
+                  disabled
+                  className="h-14 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-4 text-slate-500 outline-none"
+                />
+              </label>
+
+              {nameError && (
+                <p className="text-sm font-medium text-red-600">{nameError}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSavingName}
+                className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSavingName ? "Ukladám..." : "Uložiť zmeny"}
+              </button>
+            </form>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <CardHeader
+              icon={<Lock />}
+              title="Zmena hesla"
+              subtitle="Aktualizovať heslo"
+            />
+
+            <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
+              <PasswordInput
+                label="Aktuálne heslo:"
+                value={currentPassword}
+                onChange={setCurrentPassword}
+                autoComplete="current-password"
+              />
+
+              <PasswordInput
+                label="Nové heslo:"
+                value={newPassword}
+                onChange={setNewPassword}
+                autoComplete="new-password"
+              />
+
+              <PasswordInput
+                label="Potvrdenie:"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                autoComplete="new-password"
+              />
+
+              {passwordError && (
+                <p className="text-sm font-medium text-red-600">
+                  {passwordError}
+                </p>
+              )}
+
+              {passwordSuccess && (
+                <p className="text-sm font-medium text-green-600">
+                  {passwordSuccess}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isChangingPassword}
+                className="mt-8 h-14 w-full rounded-xl bg-blue font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isChangingPassword ? "Ukladám..." : "Uložiť heslo"}
+              </button>
+            </form>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <CardHeader
+              icon={<SettingsIcon />}
+              title="Účet"
+              subtitle="Nastavenia účtu"
+            />
+
+            <div className="mt-12 rounded-2xl border border-red-200 bg-red-50 p-6">
+              <div className="flex items-center gap-3 font-bold text-red-600">
+                <Trash2 size={20} />
+                Nebezpečná zóna
+              </div>
+
+              <p className="mt-4 leading-relaxed text-slate-600">
+                Odstránenie účtu je trvalé a nie je možné ho vrátiť späť.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-red-300 px-6 font-semibold text-red-600 hover:bg-red-50"
+            >
+              <Trash2 size={20} />
+              Vymazať účet
+            </button>
+          </section>
+        </div>
+      )}
+
+      {activeTab === "stock" && <StockLocationsSettings />}
 
       {showDeleteConfirm && (
         <div

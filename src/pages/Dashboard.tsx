@@ -218,6 +218,7 @@ export default function Dashboard() {
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
       />
+
       <SearchProducts
         search={stockSearch}
         setSearch={handleStockSearchChange}

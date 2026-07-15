@@ -57,101 +57,113 @@ export default function StockLocationSelect({
   }
 
   return (
-    <div className="relative inline-block">
-      <div className="flex items-center gap-3">
-        <span className="hidden text-sm font-medium text-slate-700 sm:block">
-          Aktuálny sklad:
-        </span>
-
-        <button
-          type="button"
-          onClick={() => setIsOpen((current) => !current)}
-          className="flex min-w-48 items-center justify-between gap-4 rounded-xl border border-indigo-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-        >
-          <span className="flex min-w-0 items-center gap-3">
-            <ActiveIcon size={20} className="shrink-0 text-indigo-600" />
-
-            <span className="truncate font-semibold text-slate-900">
-              {activeLocation?.name ?? "Vyberte sklad"}
-            </span>
+    <div className="flex items-center justify-between">
+      <div className="relative inline-block">
+        <div className="flex items-center gap-3">
+          <span className="hidden text-sm font-medium text-slate-700 sm:block">
+            Aktuálny sklad:
           </span>
 
-          <ChevronDown
-            size={18}
-            className={`shrink-0 text-slate-500 transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+            className="flex min-w-48 items-center justify-between gap-4 rounded-xl border border-indigo-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <ActiveIcon size={20} className="shrink-0 text-indigo-600" />
 
-      {isOpen && (
-        <div className="absolute left-0 md:left-20 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-          <div className="p-2">
-            {locations.map((location) => {
-              const Icon = getLocationIcon(location.name);
-              const isActive = location.id === activeLocation?.id;
+              <span className="truncate font-semibold text-slate-900">
+                {activeLocation?.name ?? "Vyberte sklad"}
+              </span>
+            </span>
 
-              return (
-                <button
-                  key={location.id}
-                  type="button"
-                  onClick={() => selectLocation(location.id)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition ${
-                    isActive
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "text-slate-700 hover:bg-slate-50"
-                  }`}
-                >
-                  <span className="flex min-w-0 items-center gap-3">
-                    <Icon size={19} className="shrink-0" />
+            <ChevronDown
+              size={18}
+              className={`shrink-0 text-slate-500 transition-transform ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
 
-                    <span className="truncate font-medium">
-                      {location.name}
+        {isOpen && (
+          <div className="absolute left-0 md:left-20 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+            <div className="p-2">
+              {locations.map((location) => {
+                const Icon = getLocationIcon(location.name);
+                const isActive = location.id === activeLocation?.id;
+
+                return (
+                  <button
+                    key={location.id}
+                    type="button"
+                    onClick={() => selectLocation(location.id)}
+                    className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-700"
+                        : "text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span className="flex min-w-0 items-center gap-3">
+                      <Icon size={19} className="shrink-0" />
+
+                      <span className="truncate font-medium">
+                        {location.name}
+                      </span>
+
+                      {location.isDefault && (
+                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
+                          Predvolený
+                        </span>
+                      )}
                     </span>
 
-                    {location.isDefault && (
-                      <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
-                        Predvolený
-                      </span>
+                    {isActive && (
+                      <Check size={18} className="shrink-0 text-indigo-600" />
                     )}
-                  </span>
+                  </button>
+                );
+              })}
+            </div>
 
-                  {isActive && (
-                    <Check size={18} className="shrink-0 text-indigo-600" />
-                  )}
-                </button>
-              );
-            })}
+            <div className="border-t border-slate-200 p-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  onCreate();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-medium text-slate-700 transition hover:bg-slate-50"
+              >
+                <Plus size={19} />
+                Vytvoriť nový sklad
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  onManage();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-medium text-slate-700 transition hover:bg-slate-50"
+              >
+                <Settings size={19} />
+                Spravovať sklady
+              </button>
+            </div>
           </div>
-
-          <div className="border-t border-slate-200 p-2">
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                onCreate();
-              }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-medium text-slate-700 transition hover:bg-slate-50"
-            >
-              <Plus size={19} />
-              Vytvoriť nový sklad
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                onManage();
-              }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-medium text-slate-700 transition hover:bg-slate-50"
-            >
-              <Settings size={19} />
-              Spravovať sklady
-            </button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={() => onCreate()}
+          className="flex h-12 items-center justify-self-end justify-center gap-2 rounded-xl bg-blue px-5 font-semibold text-white hover:bg-primary-hover m-2"
+        >
+          <Plus size={19} />
+          Vytvoriť nový sklad
+        </button>
+      </div>
     </div>
   );
 }
