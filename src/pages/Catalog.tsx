@@ -8,6 +8,7 @@ import CatalogTable from "../components/catalog/CatalogTable";
 import CatalogCards from "../components/catalog/CatalogCards";
 import Pagination from "../components/Pagination";
 import { useStockLocation } from "../context/useStockLocation";
+import AddToInventoryPopover from "../components/stock/AddToInventoryPopover";
 
 const ITEMS_PER_PAGE = 15;
 export default function Catalog() {
@@ -149,13 +150,18 @@ export default function Catalog() {
       {!loading && !error && (
         <>
           <div className="hidden md:block">
-            <CatalogTable
+            {/* <CatalogTable
               products={products}
               selectedProduct={selectedProduct}
               addingProductId={addingProductId}
               onSelectProduct={setSelectedProduct}
               onCloseProduct={() => setSelectedProduct(null)}
               onAdd={handleAddProduct}
+            /> */}
+            <CatalogTable
+              products={products}
+              addingProductId={addingProductId}
+              onSelectProduct={setSelectedProduct}
             />
           </div>
 
@@ -166,6 +172,15 @@ export default function Catalog() {
               onAdd={handleAddProduct}
             />
           </div>
+
+          {selectedProduct && (
+            <AddToInventoryPopover
+              product={selectedProduct}
+              adding={addingProductId === selectedProduct.id}
+              onClose={() => setSelectedProduct(null)}
+              onAdd={handleAddProduct}
+            />
+          )}
 
           <Pagination
             currentPage={currentPage}

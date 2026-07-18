@@ -8,17 +8,23 @@ export type CatalogViewProps = {
   onAdd: (product: CatalogProduct, quantity: number) => Promise<void>;
 };
 
+// export type CatalogTableProps = {
+//   products: CatalogProduct[];
+//   selectedProduct: CatalogProduct | null;
+//   addingProductId: number | null;
+
+//   onSelectProduct: (product: CatalogProduct) => void;
+//   onCloseProduct: () => void;
+
+//   onAdd: (
+//     product: CatalogProduct,
+//     fullQuantity: number,
+//     openedQuantity: number,
+//   ) => Promise<void>;
+// };
+
 export type CatalogTableProps = {
   products: CatalogProduct[];
-  selectedProduct: CatalogProduct | null;
   addingProductId: number | null;
-
   onSelectProduct: (product: CatalogProduct) => void;
-  onCloseProduct: () => void;
-
-  onAdd: (
-    product: CatalogProduct,
-    fullQuantity: number,
-    openedQuantity: number,
-  ) => Promise<void>;
 };

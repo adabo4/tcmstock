@@ -1,15 +1,11 @@
-import AddToInventoryPopover from "../stock/AddToInventoryPopover";
 import { ShoppingCart } from "lucide-react";
 import type { CatalogTableProps } from "../../types/catalog";
 import { PRODUCT_TYPE_LABELS } from "../../types/product";
 
 export default function CatalogTable({
   products,
-  selectedProduct,
   addingProductId,
-  onAdd,
   onSelectProduct,
-  onCloseProduct,
 }: CatalogTableProps) {
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -54,15 +50,6 @@ export default function CatalogTable({
                     <ShoppingCart size={18} />
                     Pridať
                   </button>
-
-                  {selectedProduct?.id === product.id && (
-                    <AddToInventoryPopover
-                      product={product}
-                      adding={addingProductId === product.id}
-                      onClose={onCloseProduct}
-                      onAdd={onAdd}
-                    />
-                  )}
                 </td>
               </tr>
             ))}

@@ -46,68 +46,140 @@ export default function AddToInventoryPopover({
     }
   }
 
+  // return (
+  //   <div className="absolute right-8 bottom-[50px] z-30 w-96 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-2xl">
+  //     <div className="absolute -top-2 right-10 h-4 w-4 rotate-45 border-l border-t border-slate-200 bg-white" />
+
+  //     <h3 className="text-lg font-bold text-slate-950">Pridať do skladu</h3>
+
+  //     <p className="mt-1 font-semibold text-primary">
+  //       {product.name} ({product.code})
+  //     </p>
+
+  //     <div className="mt-6 space-y-5">
+  //       <div className="flex items-center justify-between gap-4">
+  //         <p className="font-semibold text-slate-800">Neotvorené balenia</p>
+
+  //         <QuantityStepper
+  //           value={fullQuantity}
+  //           onDecrease={() =>
+  //             setFullQuantity((previous) => Math.max(0, previous - 1))
+  //           }
+  //           onIncrease={() => setFullQuantity((previous) => previous + 1)}
+  //           disabled={adding}
+  //         />
+  //       </div>
+
+  //       <div className="flex items-center justify-between gap-4">
+  //         <p className="font-semibold text-slate-800">Otvorené balenia</p>
+
+  //         <QuantityStepper
+  //           value={openedQuantity}
+  //           onDecrease={() =>
+  //             setOpenedQuantity((previous) => Math.max(0, previous - 1))
+  //           }
+  //           onIncrease={() => setOpenedQuantity((previous) => previous + 1)}
+  //           disabled={adding}
+  //         />
+  //       </div>
+  //     </div>
+
+  //     {error && (
+  //       <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">
+  //         {error}
+  //       </p>
+  //     )}
+
+  //     <div className="mt-6 flex justify-end gap-3">
+  //       <button
+  //         type="button"
+  //         onClick={onClose}
+  //         disabled={adding}
+  //         className="h-12 rounded-xl border border-slate-200 px-6 font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+  //       >
+  //         Zrušiť
+  //       </button>
+
+  //       <button
+  //         type="button"
+  //         onClick={() => void handleAddToStock()}
+  //         disabled={adding || (fullQuantity === 0 && openedQuantity === 0)}
+  //         className="h-12 rounded-xl bg-blue px-6 font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
+  //       >
+  //         {adding ? "Pridávam..." : "Pridať na sklad"}
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
+
   return (
-    <div className="absolute right-8 top-[72px] z-30 w-96 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-2xl">
-      <div className="absolute -top-2 right-10 h-4 w-4 rotate-45 border-l border-t border-slate-200 bg-white" />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/30 p-6"
+      onMouseDown={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <h3 className="text-lg font-bold text-slate-950">Pridať do skladu</h3>
 
-      <h3 className="text-lg font-bold text-slate-950">Pridať do skladu</h3>
-
-      <p className="mt-1 font-semibold text-primary">
-        {product.name} ({product.code})
-      </p>
-
-      <div className="mt-6 space-y-5">
-        <div className="flex items-center justify-between gap-4">
-          <p className="font-semibold text-slate-800">Neotvorené balenia</p>
-
-          <QuantityStepper
-            value={fullQuantity}
-            onDecrease={() =>
-              setFullQuantity((previous) => Math.max(0, previous - 1))
-            }
-            onIncrease={() => setFullQuantity((previous) => previous + 1)}
-            disabled={adding}
-          />
-        </div>
-
-        <div className="flex items-center justify-between gap-4">
-          <p className="font-semibold text-slate-800">Otvorené balenia</p>
-
-          <QuantityStepper
-            value={openedQuantity}
-            onDecrease={() =>
-              setOpenedQuantity((previous) => Math.max(0, previous - 1))
-            }
-            onIncrease={() => setOpenedQuantity((previous) => previous + 1)}
-            disabled={adding}
-          />
-        </div>
-      </div>
-
-      {error && (
-        <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">
-          {error}
+        <p className="mt-1 font-semibold text-primary">
+          {product.name} ({product.code})
         </p>
-      )}
 
-      <div className="mt-6 flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={adding}
-          className="h-12 rounded-xl border border-slate-200 px-6 font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
-        >
-          Zrušiť
-        </button>
+        <div className="mt-6 space-y-5">
+          <div className="flex items-center justify-between gap-4">
+            <p className="font-semibold text-slate-800">Neotvorené balenia</p>
 
-        <button
-          type="button"
-          onClick={() => void handleAddToStock()}
-          disabled={adding || (fullQuantity === 0 && openedQuantity === 0)}
-          className="h-12 rounded-xl bg-blue px-6 font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
-        >
-          {adding ? "Pridávam..." : "Pridať na sklad"}
-        </button>
+            <QuantityStepper
+              value={fullQuantity}
+              onDecrease={() =>
+                setFullQuantity((previous) => Math.max(0, previous - 1))
+              }
+              onIncrease={() => setFullQuantity((previous) => previous + 1)}
+              disabled={adding}
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-4">
+            <p className="font-semibold text-slate-800">Otvorené balenia</p>
+
+            <QuantityStepper
+              value={openedQuantity}
+              onDecrease={() =>
+                setOpenedQuantity((previous) => Math.max(0, previous - 1))
+              }
+              onIncrease={() => setOpenedQuantity((previous) => previous + 1)}
+              disabled={adding}
+            />
+          </div>
+        </div>
+
+        {error && (
+          <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={adding}
+            className="h-12 rounded-xl border border-slate-200 px-6 font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+          >
+            Zrušiť
+          </button>
+
+          <button
+            type="button"
+            onClick={() => void handleAddToStock()}
+            disabled={adding || (fullQuantity === 0 && openedQuantity === 0)}
+            className="h-12 rounded-xl bg-blue px-6 font-semibold text-white hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            {adding ? "Pridávam..." : "Pridať na sklad"}
+          </button>
+        </div>
       </div>
     </div>
   );
