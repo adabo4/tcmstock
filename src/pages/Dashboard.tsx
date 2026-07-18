@@ -201,80 +201,92 @@ export default function Dashboard() {
 
   return (
     <>
-      <StockLocationSelect
-        locations={locations}
-        activeLocationId={activeLocationId}
-        onChange={handleLocationChange}
-        onCreate={() => setCreateLocationOpen(true)}
-        onManage={() => navigate("/settings?section=stock-locations")}
-      />
-      <h1 className="mb-1 ml-15 lg:ml-0 text-5xl font-bold">Prehľad</h1>
-      <p className="mb-8 ml-15 lg:ml-0 text-slate-500">
-        Prehľad vašich zásob produktov
-      </p>
-      <DashboardSummaryCard
-        userName={user?.name}
-        totalItems={summary.totalItems}
-        lowStock={summary.lowStock}
-        outOfStock={summary.outOfStock}
-      />
-
-      <SearchProducts
-        search={stockSearch}
-        setSearch={handleStockSearchChange}
-        type={stockType}
-        setType={handleStockTypeChange}
-        showCategoryButton={false}
-      ></SearchProducts>
-      {isLoading && (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-slate-500">Načítavam sklad...</p>
-        </section>
-      )}
-
-      {!isLoading && error && (
-        <section className="rounded-3xl border border-red-200 bg-red-50 p-6">
-          <p className="font-medium text-red-700">{error}</p>
-        </section>
-      )}
-
-      {!isLoading && !error && (
-        <>
-          <div className="hidden md:block">
-            <MyStockTable
-              items={stock}
-              updatingItemId={updatingItemId}
-              deletingItemId={deletingItemId}
-              onQuantityChange={handleUpdateQuantity}
-              onDelete={handleDelete}
+      <div className="w-full min-w-0 overflow-x-hidden">
+        <div className="mb-8 min-w-0">
+          <div className="mb-6 w-full min-w-0">
+            <StockLocationSelect
+              locations={locations}
+              activeLocationId={activeLocationId}
+              onChange={handleLocationChange}
+              onCreate={() => setCreateLocationOpen(true)}
+              onManage={() => navigate("/settings?section=stock-locations")}
             />
           </div>
 
-          <div className="md:hidden">
-            <MyStockCards
-              items={stock}
-              updatingItemId={updatingItemId}
-              deletingItemId={deletingItemId}
-              onQuantityChange={handleUpdateQuantity}
-              onDelete={handleDelete}
-            />
+          <div className="min-w-0 pl-14 sm:pl-0">
+            <h1 className="break-words text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+              Prehľad
+            </h1>
+
+            <p className="mt-1 text-sm text-slate-500 sm:text-base">
+              Prehľad vašich zásob produktov
+            </p>
           </div>
+        </div>
+        <DashboardSummaryCard
+          userName={user?.name}
+          totalItems={summary.totalItems}
+          lowStock={summary.lowStock}
+          outOfStock={summary.outOfStock}
+        />
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            total={total}
-            itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={setCurrentPage}
-            itemLabel="produktov"
-          />
-        </>
-      )}
+        <SearchProducts
+          search={stockSearch}
+          setSearch={handleStockSearchChange}
+          type={stockType}
+          setType={handleStockTypeChange}
+          showCategoryButton={false}
+        ></SearchProducts>
+        {isLoading && (
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-slate-500">Načítavam sklad...</p>
+          </section>
+        )}
 
-      <CreateStockLocationModal
-        open={createLocationOpen}
-        onClose={() => setCreateLocationOpen(false)}
-      />
+        {!isLoading && error && (
+          <section className="rounded-3xl border border-red-200 bg-red-50 p-6">
+            <p className="font-medium text-red-700">{error}</p>
+          </section>
+        )}
+
+        {!isLoading && !error && (
+          <>
+            <div className="hidden md:block">
+              <MyStockTable
+                items={stock}
+                updatingItemId={updatingItemId}
+                deletingItemId={deletingItemId}
+                onQuantityChange={handleUpdateQuantity}
+                onDelete={handleDelete}
+              />
+            </div>
+
+            <div className="md:hidden">
+              <MyStockCards
+                items={stock}
+                updatingItemId={updatingItemId}
+                deletingItemId={deletingItemId}
+                onQuantityChange={handleUpdateQuantity}
+                onDelete={handleDelete}
+              />
+            </div>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              total={total}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={setCurrentPage}
+              itemLabel="produktov"
+            />
+          </>
+        )}
+
+        <CreateStockLocationModal
+          open={createLocationOpen}
+          onClose={() => setCreateLocationOpen(false)}
+        />
+      </div>
     </>
   );
 }

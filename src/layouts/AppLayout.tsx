@@ -81,7 +81,7 @@ export default function AppLayout() {
       </aside>
 
       <div className="lg:pl-72">
-        <main className="p-6 lg:p-10">
+        <main className="p-4 lg:p-10">
           <Outlet />
         </main>
       </div>
