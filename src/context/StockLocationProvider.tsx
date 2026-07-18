@@ -8,6 +8,7 @@ import {
 import type { StockLocation } from "../types/stockLocations";
 import { getStockLocationsRequest } from "../api/stockLocations";
 import { StockLocationContext } from "./StockLocationContext";
+import { useAuth } from "./useAuth";
 
 type Props = {
   children: ReactNode;
@@ -22,6 +23,7 @@ export function StockLocationProvider({ children }: Props) {
   // Pri prvom renderi už vieme, že sa bude načítavať.
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, loading: isAuthLoading } = useAuth();
 
   const applyLocations = useCallback((data: StockLocation[]) => {
     setLocations(data);
@@ -48,11 +50,31 @@ export function StockLocationProvider({ children }: Props) {
 
     return data;
   }, []);
+
   useEffect(() => {
     let isCancelled = false;
 
     async function initializeLocations() {
+      // Počkáme, kým AuthProvider dokončí /auth/me alebo login.
+      if (isAuthLoading) {
+        return;
+      }
+
+      // Používateľ nie je prihlásený.
+      if (!user) {
+        if (!isCancelled) {
+          setLocations([]);
+          setActiveLocationIdState(null);
+          setError(null);
+          setIsLoading(false);
+        }
+
+        return;
+      }
+
       try {
+        setIsLoading(true);
+
         const data = await fetchLocations();
 
         if (isCancelled) {
@@ -65,6 +87,9 @@ export function StockLocationProvider({ children }: Props) {
         if (isCancelled) {
           return;
         }
+
+        setLocations([]);
+        setActiveLocationIdState(null);
 
         setError(
           error instanceof Error
@@ -83,7 +108,7 @@ export function StockLocationProvider({ children }: Props) {
     return () => {
       isCancelled = true;
     };
-  }, [fetchLocations, applyLocations]);
+  }, [user, isAuthLoading, fetchLocations, applyLocations]);
 
   const refreshLocations = useCallback(async () => {
     try {
