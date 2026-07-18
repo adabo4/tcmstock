@@ -104,9 +104,11 @@ export default function SignIn() {
               Heslo
             </label>
             <div className="flex items-center rounded-xl border border-slate-300 px-5">
-              <Lock className="text-slate-500" size={24} />
+              <Lock className="shrink-0 text-slate-500 " size={24} />
 
-              <PasswordInput value={password} onChange={setPassword} />
+              <div className="min-w-0 flex-1">
+                <PasswordInput value={password} onChange={setPassword} />
+              </div>
             </div>
           </div>
 

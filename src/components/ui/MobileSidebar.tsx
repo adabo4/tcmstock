@@ -7,6 +7,8 @@ import {
   X,
 } from "lucide-react";
 import { SidebarLink } from "../../layouts/AppLayout";
+import { useAuth } from "../../context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 type SideBarProps = {
   sidebarOpen: boolean;
@@ -17,6 +19,13 @@ export default function MobileSidebar({
   sidebarOpen,
   setSidebarOpen,
 }: SideBarProps) {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    signOut();
+    navigate("/sign-in");
+  }
   return (
     <>
       {sidebarOpen && (
@@ -78,7 +87,10 @@ export default function MobileSidebar({
           </SidebarLink>
         </nav>
 
-        <button className="absolute bottom-6 left-6 right-6 flex h-12 items-center gap-3 rounded-xl px-4 text-slate-500 hover:bg-slate-100">
+        <button
+          onClick={handleLogout}
+          className="absolute bottom-6 left-6 right-6 flex h-12 items-center gap-3 rounded-xl px-4 text-slate-500 hover:bg-slate-100"
+        >
           <LogOut size={20} />
           Odhlásiť sa
         </button>

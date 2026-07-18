@@ -30,7 +30,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           </div>
         </aside>
 
-        <section className="flex flex-1 items-center justify-center px-6 py-12">
+        <section className="flex min-w-0 flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-12">
           <div className="w-full max-w-xl">{children}</div>
         </section>
       </div>
