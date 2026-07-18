@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createElement, useState } from "react";
 import {
   Building2,
   Check,
@@ -47,10 +47,6 @@ export default function StockLocationSelect({
     locations.find((location) => location.isDefault) ??
     locations[0];
 
-  const ActiveIcon = activeLocation
-    ? getLocationIcon(activeLocation.name)
-    : Warehouse;
-
   function selectLocation(locationId: number) {
     onChange(locationId);
     setIsOpen(false);
@@ -70,7 +66,15 @@ export default function StockLocationSelect({
             className="flex min-w-48 items-center justify-between gap-4 rounded-xl border border-indigo-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-100"
           >
             <span className="flex min-w-0 items-center gap-3">
-              <ActiveIcon size={20} className="shrink-0 text-indigo-600" />
+              {createElement(
+                activeLocation
+                  ? getLocationIcon(activeLocation.name)
+                  : Warehouse,
+                {
+                  size: 20,
+                  className: "shrink-0 text-indigo-600",
+                },
+              )}
 
               <span className="truncate font-semibold text-slate-900">
                 {activeLocation?.name ?? "Vyberte sklad"}

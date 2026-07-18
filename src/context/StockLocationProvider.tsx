@@ -104,13 +104,16 @@ export function StockLocationProvider({ children }: Props) {
     }
   }, [fetchLocations, applyLocations]);
 
-  function setActiveLocationId(id: number) {
-    const locationExists = locations.some((location) => location.id === id);
+  const setActiveLocationId = useCallback(
+    (id: number) => {
+      const locationExists = locations.some((location) => location.id === id);
 
-    if (locationExists) {
-      setActiveLocationIdState(id);
-    }
-  }
+      if (locationExists) {
+        setActiveLocationIdState(id);
+      }
+    },
+    [locations],
+  );
 
   const activeLocation = useMemo(
     () =>
@@ -135,6 +138,7 @@ export function StockLocationProvider({ children }: Props) {
       isLoading,
       error,
       refreshLocations,
+      setActiveLocationId,
     ],
   );
 
