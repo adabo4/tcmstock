@@ -9,6 +9,9 @@ import CatalogCards from "../components/catalog/CatalogCards";
 import Pagination from "../components/Pagination";
 import { useStockLocation } from "../context/useStockLocation";
 import AddToInventoryPopover from "../components/stock/AddToInventoryPopover";
+import MobileMenuButton from "../components/ui/MobileMenuButton";
+import { useOutletContext } from "react-router-dom";
+import type { AppLayoutOutletContext } from "../layouts/AppLayout";
 
 const ITEMS_PER_PAGE = 15;
 export default function Catalog() {
@@ -119,14 +122,19 @@ export default function Catalog() {
       setAddingProductId(null);
     }
   }
-
+  const { openSidebar } = useOutletContext<AppLayoutOutletContext>();
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-950">Katalóg produktov</h1>
-        <p className="mt-2 text-lg text-slate-500">
-          Vyberte produkty z katalógu a pridajte ich do svojho skladu.
-        </p>
+      <div className="mb-8 flex items-start gap-3 ">
+        <MobileMenuButton onClick={openSidebar} />
+        <div className="min-w-0">
+          <h1 className="text-3xl leading-tight font-bold text-slate-950 sm:text-4xl">
+            Katalóg produktov
+          </h1>
+          <p className="mt-2 sm:text-base text-sm lg:text-lg text-slate-500">
+            Vyberte produkty z katalógu a pridajte ich do svojho skladu.
+          </p>
+        </div>
       </div>
 
       <SearchProducts

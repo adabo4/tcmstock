@@ -11,8 +11,14 @@ import { useState, type FormEvent } from "react";
 import { deleteAccountRequest, updateNameRequest } from "../api/auth";
 import { useNotification } from "../context/useNotification";
 import { changePasswordRequest } from "../api/auth";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 import StockLocationsSettings from "../components/settings/StockLocationSettings";
+import type { AppLayoutOutletContext } from "../layouts/AppLayout";
+import MobileMenuButton from "../components/ui/MobileMenuButton";
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
@@ -36,6 +42,8 @@ export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const section = searchParams.get("section");
+
+  const { openSidebar } = useOutletContext<AppLayoutOutletContext>();
 
   const activeTab: "profile" | "stock" =
     section === "stock-locations" ? "stock" : "profile";
@@ -149,11 +157,20 @@ export default function Settings() {
   return (
     <div>
       <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <h1 className="text-4xl font-bold text-slate-950">Nastavenia</h1>
-          <p className="mt-2 text-lg text-slate-500">
-            Upravte nastavenia svojho účtu.
-          </p>
+        <div className="mb-8">
+          <div className="mb-6 flex items-center gap-3">
+            <MobileMenuButton onClick={openSidebar} />
+
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+                Nastavenia
+              </h1>
+
+              <p className="mt-1 text-sm text-slate-500 sm:text-base">
+                Spravujte svoj účet a sklady
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

@@ -18,7 +18,7 @@ import { useStockLocation } from "../context/useStockLocation";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import CreateStockLocationModal from "../components/stock/CreateCtockLocationModal";
 import type { AppLayoutOutletContext } from "../layouts/AppLayout";
-import { MenuIcon } from "lucide-react";
+import MobileMenuButton from "../components/ui/MobileMenuButton";
 const ITEMS_PER_PAGE = 15;
 
 export default function Dashboard() {
@@ -218,21 +218,7 @@ export default function Dashboard() {
           </div> */}
 
           <div className="mb-6 flex w-full min-w-0 items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              title="Otvoriť menu"
-              aria-label="Otvoriť menu"
-              onClick={openSidebar}
-              className="
-      flex h-12 w-12 shrink-0 items-center justify-center
-      rounded-xl border border-slate-200 bg-white
-      text-slate-900 shadow-sm transition
-      hover:bg-slate-50
-      lg:hidden
-    "
-            >
-              <MenuIcon size={25} />
-            </button>
+            <MobileMenuButton onClick={openSidebar} />
 
             <div className="min-w-0 flex-1">
               <StockLocationSelect
@@ -245,7 +231,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="min-w-0 pl-14 sm:pl-0">
+          <div className="min-w-0 ">
             <h1 className="break-words text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
               Prehľad
             </h1>
