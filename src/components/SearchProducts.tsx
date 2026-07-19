@@ -1,5 +1,6 @@
 import { ChevronDown, Search, ShoppingCart, X } from "lucide-react";
 import { PRODUCT_TYPE_LABELS, type ProductType } from "../types/product";
+import type { PackageStatus } from "../types/stock";
 
 type SearchProductsProps = {
   search: string;
@@ -8,6 +9,9 @@ type SearchProductsProps = {
   setType: (value: ProductType | "") => void;
   placeholder?: string;
   showCategoryButton?: boolean;
+  packageStatus?: PackageStatus;
+  setPackageStatus?: (value: PackageStatus) => void;
+  showPackageStatus?: boolean;
 };
 
 export default function SearchProducts({
@@ -17,6 +21,9 @@ export default function SearchProducts({
   setType,
   placeholder = "Nájdi podľa názvu alebo kódu...",
   showCategoryButton = true,
+  packageStatus,
+  setPackageStatus,
+  showPackageStatus,
 }: SearchProductsProps) {
   return (
     <section className="mb-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -45,6 +52,19 @@ export default function SearchProducts({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
+          {showPackageStatus && setPackageStatus && (
+            <select
+              value={packageStatus ?? ""}
+              onChange={(e) =>
+                setPackageStatus(e.target.value as PackageStatus)
+              }
+              className="h-14 rounded-xl border border-slate-200 bg-white px-4"
+            >
+              <option value="">Všetky balenia</option>
+              <option value="OPENED">Má otvorené</option>
+              <option value="CLOSED">Má zatvorené</option>
+            </select>
+          )}
           <select
             value={type}
             onChange={(e) => setType(e.target.value as ProductType | "")}

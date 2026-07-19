@@ -10,7 +10,15 @@ import type {
 export function getMyStockRequest(
   query: MyStockQuery = {},
 ): Promise<MyStockResponse> {
-  const { search, type, status, page = 1, limit = 15, stockLocationId } = query;
+  const {
+    search,
+    type,
+    status,
+    page = 1,
+    limit = 15,
+    stockLocationId,
+    packageStatus,
+  } = query;
 
   const params = new URLSearchParams();
 
@@ -24,6 +32,10 @@ export function getMyStockRequest(
 
   if (status) {
     params.set("status", status);
+  }
+
+  if (packageStatus) {
+    params.set("packageStatus", packageStatus);
   }
 
   if (stockLocationId) {

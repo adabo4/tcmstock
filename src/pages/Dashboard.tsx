@@ -4,7 +4,12 @@ import SearchProducts from "../components/SearchProducts";
 import MyStockTable from "../components/stock/MyStockTable";
 import type { ProductType } from "../types/product";
 import { useAuth } from "../context/useAuth";
-import type { MyStockItem, QuantityField, StockStatus } from "../types/stock";
+import type {
+  MyStockItem,
+  PackageStatus,
+  QuantityField,
+  StockStatus,
+} from "../types/stock";
 import {
   getMyStockRequest,
   removeFromMyStockRequest,
@@ -42,6 +47,8 @@ export default function Dashboard() {
     lowStock: 0,
     outOfStock: 0,
   });
+
+  const [packageStatus, setPackageStatus] = useState<PackageStatus>("");
 
   const [createLocationOpen, setCreateLocationOpen] = useState(false);
 
@@ -93,38 +100,101 @@ export default function Dashboard() {
     setCurrentPage(1);
   }
 
-  const loadStock = useCallback(async () => {
-    if (!activeLocationId) {
-      return;
-    }
-    try {
-      setIsLoading(true);
-      setError("");
+  function handlePackageStatusChange(value: "OPENED" | "CLOSED" | "") {
+    setPackageStatus(value);
+    setCurrentPage(1);
+  }
 
-      const response = await getMyStockRequest({
-        search: stockSearch.trim() || undefined,
-        type: stockType || undefined,
-        status: stockStatus || undefined,
-        page: currentPage,
-        limit: ITEMS_PER_PAGE,
-        stockLocationId: activeLocationId ?? undefined,
-      });
+  // const loadStock = useCallback(async () => {
+  //   if (!activeLocationId) {
+  //     return;
+  //   }
+  //   try {
+  //     setIsLoading(true);
+  //     setError("");
 
-      setStock(response.items);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
-      setSummary(response.summary);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Nepodarilo sa načítať produkty.";
+  //     const response = await getMyStockRequest({
+  //       search: stockSearch.trim() || undefined,
+  //       type: stockType || undefined,
+  //       status: stockStatus || undefined,
+  //       page: currentPage,
+  //       limit: ITEMS_PER_PAGE,
+  //       stockLocationId: activeLocationId ?? undefined,
+  //       packageStatus: packageStatus || undefined,
+  //     });
 
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [stockSearch, stockType, currentPage, activeLocationId, stockStatus]);
+  //     setStock(response.items);
+  //     setTotal(response.total);
+  //     setTotalPages(response.totalPages);
+  //     setSummary(response.summary);
+  //   } catch (error) {
+  //     const message =
+  //       error instanceof Error
+  //         ? error.message
+  //         : "Nepodarilo sa načítať produkty.";
+
+  //     setError(message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [
+  //   stockSearch,
+  //   stockType,
+  //   currentPage,
+  //   activeLocationId,
+  //   stockStatus,
+  //   packageStatus,
+  // ]);
+
+  const loadStock = useCallback(
+    async (showLoader = true) => {
+      if (!activeLocationId) {
+        return;
+      }
+
+      try {
+        if (showLoader) {
+          setIsLoading(true);
+        }
+
+        setError("");
+
+        const response = await getMyStockRequest({
+          search: stockSearch.trim() || undefined,
+          type: stockType || undefined,
+          status: stockStatus || undefined,
+          packageStatus: packageStatus || undefined,
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+          stockLocationId: activeLocationId,
+        });
+
+        setStock(response.items);
+        setTotal(response.total);
+        setTotalPages(response.totalPages);
+        setSummary(response.summary);
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Nepodarilo sa načítať produkty.";
+
+        setError(message);
+      } finally {
+        if (showLoader) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [
+      stockSearch,
+      stockType,
+      stockStatus,
+      packageStatus,
+      currentPage,
+      activeLocationId,
+    ],
+  );
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -174,6 +244,41 @@ export default function Dashboard() {
     }
   }
 
+  // async function handleUpdateQuantity(
+  //   item: MyStockItem,
+  //   field: QuantityField,
+  //   newValue: number,
+  // ) {
+  //   if (newValue < 0) {
+  //     return;
+  //   }
+
+  //   try {
+  //     setUpdatingItemId(item.id);
+  //     setError("");
+
+  //     await updateMyStockRequest(item.id, {
+  //       fullQuantity: field === "fullQuantity" ? newValue : item.fullQuantity,
+  //       openedQuantity:
+  //         field === "openedQuantity" ? newValue : item.openedQuantity,
+  //     });
+
+  //     await loadStock();
+
+  //     showNotification("Množstvo produktu bolo aktualizované.", "success");
+  //   } catch (error) {
+  //     const message =
+  //       error instanceof Error
+  //         ? error.message
+  //         : "Množstvo produktu sa nepodarilo aktualizovať.";
+
+  //     setError(message);
+  //     showNotification(message, "error");
+  //   } finally {
+  //     setUpdatingItemId(null);
+  //   }
+  // }
+
   async function handleUpdateQuantity(
     item: MyStockItem,
     field: QuantityField,
@@ -193,7 +298,7 @@ export default function Dashboard() {
           field === "openedQuantity" ? newValue : item.openedQuantity,
       });
 
-      await loadStock();
+      await loadStock(false);
 
       showNotification("Množstvo produktu bolo aktualizované.", "success");
     } catch (error) {
@@ -258,6 +363,9 @@ export default function Dashboard() {
           type={stockType}
           setType={handleStockTypeChange}
           showCategoryButton={false}
+          setPackageStatus={handlePackageStatusChange}
+          packageStatus={packageStatus}
+          showPackageStatus={true}
         ></SearchProducts>
         {isLoading && (
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

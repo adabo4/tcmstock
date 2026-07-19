@@ -1,5 +1,7 @@
 import type { ProductType } from "./product";
 
+export type PackageStatus = "OPENED" | "CLOSED" | "";
+
 export type MyStockItem = {
   id: number;
   userId: number;
@@ -23,6 +25,7 @@ export type MyStockQuery = {
   limit?: number;
   stockLocationId?: number;
   status?: "LOW_STOCK" | "OUT_OF_STOCK";
+  packageStatus?: "OPENED" | "CLOSED" | "";
 };
 
 export type MyStockResponse = {
