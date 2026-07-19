@@ -1,15 +1,12 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Package,
-  Settings,
-  LogOut,
-  Pill,
-  MenuIcon,
-} from "lucide-react";
+import { LayoutDashboard, Package, Settings, LogOut, Pill } from "lucide-react";
 import { useState } from "react";
 import MobileSidebar from "../components/ui/MobileSidebar";
 import { useAuth } from "../context/useAuth";
+
+export type AppLayoutOutletContext = {
+  openSidebar: () => void;
+};
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,13 +19,13 @@ export default function AppLayout() {
   }
   return (
     <div className="min-h-screen bg-slate-50">
-      <button
+      {/* <button
         title="Menu Icon"
         onClick={() => setSidebarOpen(true)}
         className="fixed left-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow lg:hidden"
       >
         <MenuIcon />
-      </button>
+      </button> */}
       <MobileSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -82,7 +79,7 @@ export default function AppLayout() {
 
       <div className="lg:pl-72">
         <main className="p-4 lg:p-10">
-          <Outlet />
+          <Outlet context={{ openSidebar: () => setSidebarOpen(true) }} />
         </main>
       </div>
     </div>

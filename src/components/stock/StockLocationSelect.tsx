@@ -233,12 +233,12 @@ export default function StockLocationSelect({
           {isOpen && (
             <div
               className="
-              absolute left-0 top-full z-50 mt-2
-              w-[min(20rem,calc(100vw-2rem))]
-              overflow-hidden rounded-2xl
-              border border-slate-200 bg-white shadow-xl
-              sm:w-full
-            "
+    absolute -left-[3.75rem] top-full z-50 mt-2
+    w-[calc(100vw-2rem)]
+    overflow-hidden rounded-2xl
+    border border-slate-200 bg-white shadow-xl
+    sm:left-0 sm:w-full
+  "
             >
               <div className="p-2">
                 {locations.map((location) => {

@@ -15,8 +15,10 @@ import MyStockCards from "../components/stock/MyStockCards";
 import Pagination from "../components/Pagination";
 import StockLocationSelect from "../components/stock/StockLocationSelect";
 import { useStockLocation } from "../context/useStockLocation";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import CreateStockLocationModal from "../components/stock/CreateCtockLocationModal";
+import type { AppLayoutOutletContext } from "../layouts/AppLayout";
+import { MenuIcon } from "lucide-react";
 const ITEMS_PER_PAGE = 15;
 
 export default function Dashboard() {
@@ -34,6 +36,8 @@ export default function Dashboard() {
   const { showNotification } = useNotification();
 
   const [createLocationOpen, setCreateLocationOpen] = useState(false);
+
+  const { openSidebar } = useOutletContext<AppLayoutOutletContext>();
 
   const navigate = useNavigate();
 
@@ -203,7 +207,7 @@ export default function Dashboard() {
     <>
       <div className="w-full min-w-0 overflow-x-hidden">
         <div className="mb-8 min-w-0">
-          <div className="mb-6 w-full min-w-0">
+          {/* <div className="mb-6 w-full min-w-0">
             <StockLocationSelect
               locations={locations}
               activeLocationId={activeLocationId}
@@ -211,6 +215,34 @@ export default function Dashboard() {
               onCreate={() => setCreateLocationOpen(true)}
               onManage={() => navigate("/settings?section=stock-locations")}
             />
+          </div> */}
+
+          <div className="mb-6 flex w-full min-w-0 items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              title="Otvoriť menu"
+              aria-label="Otvoriť menu"
+              onClick={openSidebar}
+              className="
+      flex h-12 w-12 shrink-0 items-center justify-center
+      rounded-xl border border-slate-200 bg-white
+      text-slate-900 shadow-sm transition
+      hover:bg-slate-50
+      lg:hidden
+    "
+            >
+              <MenuIcon size={25} />
+            </button>
+
+            <div className="min-w-0 flex-1">
+              <StockLocationSelect
+                locations={locations}
+                activeLocationId={activeLocationId}
+                onChange={handleLocationChange}
+                onCreate={() => setCreateLocationOpen(true)}
+                onManage={() => navigate("/settings?section=stock-locations")}
+              />
+            </div>
           </div>
 
           <div className="min-w-0 pl-14 sm:pl-0">
