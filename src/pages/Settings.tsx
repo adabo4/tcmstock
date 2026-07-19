@@ -106,7 +106,7 @@ export default function Settings() {
     }
 
     if (currentPassword === newPassword) {
-      setPasswordError("Nové heslo sa musí byť odlišné od súčasného.");
+      setPasswordError("Nové heslo sa musí odlišovať od súčasného.");
       return;
     }
 
