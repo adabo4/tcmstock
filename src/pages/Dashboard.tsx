@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardSummaryCard from "../components/DashboardSummaryCard";
 import SearchProducts from "../components/SearchProducts";
 import MyStockTable from "../components/stock/MyStockTable";
 import type { ProductType } from "../types/product";
 import { useAuth } from "../context/useAuth";
-import type { MyStockItem, QuantityField } from "../types/stock";
+import type { MyStockItem, QuantityField, StockStatus } from "../types/stock";
 import {
   getMyStockRequest,
   removeFromMyStockRequest,
@@ -34,6 +34,14 @@ export default function Dashboard() {
   const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
   const { showNotification } = useNotification();
+  const [stockStatus, setStockStatus] = useState<
+    "LOW_STOCK" | "OUT_OF_STOCK" | ""
+  >("");
+  const [summary, setSummary] = useState({
+    totalProducts: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  });
 
   const [createLocationOpen, setCreateLocationOpen] = useState(false);
 
@@ -46,29 +54,29 @@ export default function Dashboard() {
 
   const { user } = useAuth();
 
-  const summary = useMemo(() => {
-    let totalItems = 0;
-    let lowStock = 0;
-    let outOfStock = 0;
+  // const summary = useMemo(() => {
+  //   let totalItems = 0;
+  //   let lowStock = 0;
+  //   let outOfStock = 0;
 
-    for (const item of stock) {
-      const quantity = item.fullQuantity + item.openedQuantity;
+  //   for (const item of stock) {
+  //     const quantity = item.fullQuantity + item.openedQuantity;
 
-      totalItems += quantity;
+  //     totalItems += quantity;
 
-      if (quantity === 0) {
-        outOfStock++;
-      } else if (quantity < 3) {
-        lowStock++;
-      }
-    }
+  //     if (quantity === 0) {
+  //       outOfStock++;
+  //     } else if (quantity < 2) {
+  //       lowStock++;
+  //     }
+  //   }
 
-    return {
-      totalItems,
-      lowStock,
-      outOfStock,
-    };
-  }, [stock]);
+  //   return {
+  //     totalItems,
+  //     lowStock,
+  //     outOfStock,
+  //   };
+  // }, [stock]);
 
   function handleStockSearchChange(value: string) {
     setStockSearch(value);
@@ -79,6 +87,12 @@ export default function Dashboard() {
     setStockType(value);
     setCurrentPage(1);
   }
+
+  function handleSummaryClick(status: StockStatus) {
+    setStockStatus((current) => (current === status ? "" : status));
+    setCurrentPage(1);
+  }
+
   const loadStock = useCallback(async () => {
     if (!activeLocationId) {
       return;
@@ -90,6 +104,7 @@ export default function Dashboard() {
       const response = await getMyStockRequest({
         search: stockSearch.trim() || undefined,
         type: stockType || undefined,
+        status: stockStatus || undefined,
         page: currentPage,
         limit: ITEMS_PER_PAGE,
         stockLocationId: activeLocationId ?? undefined,
@@ -98,6 +113,7 @@ export default function Dashboard() {
       setStock(response.items);
       setTotal(response.total);
       setTotalPages(response.totalPages);
+      setSummary(response.summary);
     } catch (error) {
       const message =
         error instanceof Error
@@ -108,7 +124,7 @@ export default function Dashboard() {
     } finally {
       setIsLoading(false);
     }
-  }, [stockSearch, stockType, currentPage, activeLocationId]);
+  }, [stockSearch, stockType, currentPage, activeLocationId, stockStatus]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -171,18 +187,13 @@ export default function Dashboard() {
       setUpdatingItemId(item.id);
       setError("");
 
-      const updatedItem = await updateMyStockRequest(item.id, {
+      await updateMyStockRequest(item.id, {
         fullQuantity: field === "fullQuantity" ? newValue : item.fullQuantity,
-
         openedQuantity:
           field === "openedQuantity" ? newValue : item.openedQuantity,
       });
 
-      setStock((currentStock) =>
-        currentStock.map((stockItem) =>
-          stockItem.id === updatedItem.id ? updatedItem : stockItem,
-        ),
-      );
+      await loadStock();
 
       showNotification("Množstvo produktu bolo aktualizované.", "success");
     } catch (error) {
@@ -207,16 +218,6 @@ export default function Dashboard() {
     <>
       <div className="w-full min-w-0 overflow-x-hidden">
         <div className="mb-8 min-w-0">
-          {/* <div className="mb-6 w-full min-w-0">
-            <StockLocationSelect
-              locations={locations}
-              activeLocationId={activeLocationId}
-              onChange={handleLocationChange}
-              onCreate={() => setCreateLocationOpen(true)}
-              onManage={() => navigate("/settings?section=stock-locations")}
-            />
-          </div> */}
-
           <div className="mb-6 flex w-full min-w-0 items-center gap-2 sm:gap-3">
             <MobileMenuButton onClick={openSidebar} />
 
@@ -243,9 +244,12 @@ export default function Dashboard() {
         </div>
         <DashboardSummaryCard
           userName={user?.name}
-          totalItems={summary.totalItems}
+          totalItems={summary.totalProducts}
           lowStock={summary.lowStock}
           outOfStock={summary.outOfStock}
+          onLowStockClick={() => handleSummaryClick("LOW_STOCK")}
+          onOutOfStockClick={() => handleSummaryClick("OUT_OF_STOCK")}
+          onTotalClick={() => handleSummaryClick("")}
         />
 
         <SearchProducts

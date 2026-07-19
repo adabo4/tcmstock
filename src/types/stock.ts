@@ -22,6 +22,7 @@ export type MyStockQuery = {
   page?: number;
   limit?: number;
   stockLocationId?: number;
+  status?: "LOW_STOCK" | "OUT_OF_STOCK";
 };
 
 export type MyStockResponse = {
@@ -30,6 +31,11 @@ export type MyStockResponse = {
   page: number;
   limit: number;
   totalPages: number;
+  summary: {
+    totalProducts: number;
+    lowStock: number;
+    outOfStock: number;
+  };
 };
 
 export type AddToStockDto = {
@@ -69,3 +75,5 @@ export type MyStockCardProps = {
   ) => void | Promise<void>;
   onDelete: (item: MyStockItem) => void | Promise<void>;
 };
+
+export type StockStatus = "LOW_STOCK" | "OUT_OF_STOCK" | "";

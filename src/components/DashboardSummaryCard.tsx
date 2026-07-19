@@ -8,6 +8,9 @@ type Props = {
   totalItems: number;
   lowStock: number;
   outOfStock: number;
+  onLowStockClick: () => void;
+  onOutOfStockClick: () => void;
+  onTotalClick: () => void;
 };
 
 export default function DashboardSummaryCard({
@@ -15,6 +18,9 @@ export default function DashboardSummaryCard({
   totalItems,
   lowStock,
   outOfStock,
+  onLowStockClick,
+  onOutOfStockClick,
+  onTotalClick,
 }: Props) {
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -60,18 +66,21 @@ export default function DashboardSummaryCard({
           number={totalItems}
           label="Celkový počet kusov"
           icon={<Box size={28} className="text-white" />}
+          onClick={onTotalClick}
         />
 
         <DashboardStatCard
           number={lowStock}
           label="Dochádzajúce zásoby"
           icon={<AlertTriangle size={28} className="text-yellow-300" />}
+          onClick={onLowStockClick}
         />
 
         <DashboardStatCard
           number={outOfStock}
           label="Vypredané"
           icon={<CircleMinus size={28} className="text-red-300" />}
+          onClick={onOutOfStockClick}
         />
       </div>
     </section>

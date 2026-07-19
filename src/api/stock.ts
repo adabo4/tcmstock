@@ -10,7 +10,7 @@ import type {
 export function getMyStockRequest(
   query: MyStockQuery = {},
 ): Promise<MyStockResponse> {
-  const { search, type, page = 1, limit = 15, stockLocationId } = query;
+  const { search, type, status, page = 1, limit = 15, stockLocationId } = query;
 
   const params = new URLSearchParams();
 
@@ -20,6 +20,10 @@ export function getMyStockRequest(
 
   if (type) {
     params.set("type", type);
+  }
+
+  if (status) {
+    params.set("status", status);
   }
 
   if (stockLocationId) {
