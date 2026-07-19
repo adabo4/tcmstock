@@ -119,7 +119,11 @@ export default function ResetPassword() {
             </p>
           ) : null}
 
-          <button type="submit" disabled={loading}>
+          <button
+            className="h-16 w-full rounded-xl bg-blue text-xl font-semibold text-white shadow-lg hover:bg-primary-hover disabled:opacity-50"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Obnovujem heslo..." : "Obnoviť heslo"}
           </button>
         </form>
