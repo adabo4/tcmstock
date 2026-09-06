@@ -3,7 +3,7 @@ import { authFetch } from "../lib/api";
 export type User = {
   id: number;
   email: string;
-  name: string;
+  name: string | null;
 };
 
 export type AuthResponse = {
@@ -27,13 +27,19 @@ export function signInRequest(email: string, password: string) {
   });
 }
 
-export function signUpRequest(name: string, email: string, password: string) {
+export function signUpRequest(
+  name: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
+) {
   return authFetch<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify({
-      name,
+      ...(name.trim() && { name: name.trim() }),
       email,
       password,
+      confirmPassword,
     }),
   });
 }
@@ -76,11 +82,11 @@ type UpdateNameResponse = {
   user: {
     id: number;
     email: string;
-    name: string;
+    name: string | null;
   };
 };
 
-export function updateNameRequest(name: string) {
+export function updateNameRequest(name: string | null) {
   return authFetch<UpdateNameResponse>("/auth/me/name", {
     method: "PATCH",
     body: JSON.stringify({

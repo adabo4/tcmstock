@@ -11,6 +11,7 @@ export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,12 +19,22 @@ export default function SignUp() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    if (password !== confirmPassword) {
+      setError("Heslá sa nezhodujú.");
+      return;
+    }
+
     setError("");
 
     try {
       setLoading(true);
 
-      const response = await signUpRequest(name, email, password);
+      const response = await signUpRequest(
+        name,
+        email,
+        password,
+        confirmPassword,
+      );
 
       navigate("/verify-email", {
         state: {
@@ -90,6 +101,19 @@ export default function SignUp() {
               <PasswordInput
                 value={password}
                 onChange={setPassword}
+              ></PasswordInput>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-3 block font-semibold text-slate-950">
+              Potvrdiť heslo
+            </label>
+            <div className="flex items-center rounded-xl border border-slate-300 px-5">
+              <Lock className="text-slate-500" size={24} />
+              <PasswordInput
+                value={confirmPassword}
+                onChange={setConfirmPassword}
               ></PasswordInput>
             </div>
           </div>

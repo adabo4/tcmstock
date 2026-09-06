@@ -58,8 +58,8 @@ export default function Settings() {
 
     const trimmedName = name.trim();
 
-    if (!trimmedName) {
-      setNameError("Meno je povinné.");
+    if (trimmedName && trimmedName.length < 2) {
+      setNameError("Meno musí obsahovať aspoň 2 znaky.");
       return;
     }
 
@@ -67,10 +67,17 @@ export default function Settings() {
       setIsSavingName(true);
       setNameError("");
 
-      const response = await updateNameRequest(trimmedName);
+      const response = await updateNameRequest(
+        trimmedName === "" ? null : trimmedName,
+      );
 
       updateUser(response.user);
-      showNotification("Meno používateľa bolo zmenené.", "success");
+      showNotification(
+        trimmedName
+          ? "Meno používateľa bolo zmenené."
+          : "Meno používateľa bolo odstránené.",
+        "success",
+      );
 
       console.log(response.message);
     } catch (error) {
