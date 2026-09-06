@@ -169,10 +169,10 @@ export default function VerifyEmail() {
           <p className="text-center text-sm leading-6 text-slate-500">
             Ak vám kód stále neprišiel, kontaktujte nás na{" "}
             <a
-              href="mailto:support@tcmstock.com"
+              href="mailto:adabo4@gmail.com"
               className="font-semibold text-primary"
             >
-              support@tcmstock.com
+              adabo4@gmail.com
             </a>
           </p>
         </form>
