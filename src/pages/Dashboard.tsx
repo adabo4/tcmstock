@@ -348,7 +348,7 @@ export default function Dashboard() {
           </div>
         </div>
         <DashboardSummaryCard
-          userName={user?.name}
+          userName={user?.name ?? undefined}
           totalItems={summary.totalProducts}
           lowStock={summary.lowStock}
           outOfStock={summary.outOfStock}
