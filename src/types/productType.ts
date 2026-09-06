@@ -7,12 +7,13 @@ import {
   Pill,
   SprayCan,
   type LucideIcon,
+  Tablets,
 } from "lucide-react";
 
 import type { ProductType } from "../types/product";
 
 export const PRODUCT_TYPE_ICONS: Record<ProductType, LucideIcon> = {
-  TABLET: Pill,
+  TABLET: Tablets,
   DRINK: PillBottle,
   SYRUP: FlaskConical,
   OIL: Droplets,
