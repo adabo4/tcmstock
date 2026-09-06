@@ -1,20 +1,9 @@
-import {
-  BookOpen,
-  PillBottle,
-  CircleDot,
-  Droplets,
-  FlaskConical,
-  Pill,
-  SprayCan,
-  type LucideIcon,
-  Plus,
-  Minus,
-  Tablets,
-} from "lucide-react";
-import { createElement, useState } from "react";
+import { Plus, Minus, Pill } from "lucide-react";
+import { useState } from "react";
 
-import type { CatalogProduct, ProductType } from "../../types/product";
+import type { CatalogProduct } from "../../types/product";
 import { PRODUCT_TYPE_LABELS } from "../../types/product";
+import { PRODUCT_TYPE_ICONS } from "../../types/productType";
 
 type CatalogCardProps = {
   product: CatalogProduct;
@@ -54,17 +43,6 @@ type CatalogCardProps = {
 //   }
 // }
 
-const PRODUCT_TYPE_ICONS: Record<ProductType, LucideIcon> = {
-  TABLET: Tablets,
-  DRINK: PillBottle,
-  SYRUP: FlaskConical,
-  OIL: Droplets,
-  CREAM: SprayCan,
-  CELL_SALT: CircleDot,
-  BOOK: BookOpen,
-  SUPPOSITORY: Pill,
-};
-
 export default function CatalogCard({
   product,
   adding,
@@ -75,6 +53,7 @@ export default function CatalogCard({
   const [error, setError] = useState("");
 
   // const ProductIcon = getProductTypeIcon(product.productType);
+  const ProductIcon = PRODUCT_TYPE_ICONS[product.productType] ?? Pill;
 
   const canAdd = fullQuantity > 0 || openedQuantity > 0;
 
@@ -101,9 +80,7 @@ export default function CatalogCard({
     <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-xl bg-blue/40 text-primary">
-          {createElement(PRODUCT_TYPE_ICONS[product.productType], {
-            size: 20,
-          })}
+          <ProductIcon size={20} />
         </div>
 
         <div className="min-w-0 flex-1">
