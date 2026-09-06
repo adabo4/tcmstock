@@ -9,6 +9,7 @@ import {
   type LucideIcon,
   Plus,
   Minus,
+  Tablets,
 } from "lucide-react";
 import { createElement, useState } from "react";
 
@@ -54,13 +55,14 @@ type CatalogCardProps = {
 // }
 
 const PRODUCT_TYPE_ICONS: Record<ProductType, LucideIcon> = {
-  TABLET: Pill,
+  TABLET: Tablets,
   DRINK: PillBottle,
   SYRUP: FlaskConical,
   OIL: Droplets,
   CREAM: SprayCan,
   CELL_SALT: CircleDot,
   BOOK: BookOpen,
+  SUPPOSITORY: Pill,
 };
 
 export default function CatalogCard({

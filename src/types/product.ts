@@ -5,7 +5,8 @@ export type ProductType =
   | "OIL"
   | "CREAM"
   | "CELL_SALT"
-  | "BOOK";
+  | "BOOK"
+  | "SUPPOSITORY";
 
 export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
   TABLET: "Tablety",
@@ -15,6 +16,7 @@ export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
   CREAM: "Krémy",
   CELL_SALT: "Schüsslerove soli",
   BOOK: "Knihy",
+  SUPPOSITORY: "Čapíky",
 };
 
 export type CatalogProduct = {
